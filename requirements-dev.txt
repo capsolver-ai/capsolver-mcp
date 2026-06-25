@@ -1,0 +1,18 @@
+# Development dependencies for capsolver-mcp
+# Mirrors [project.optional-dependencies] in pyproject.toml.
+# Source of truth: pyproject.toml — regenerate if constraints change.
+
+# Core
+capsolver-core>=0.1.0
+mcp>=1.0.0
+
+# Browser (optional, needed for browser tools)
+playwright>=1.40
+
+# Testing
+pytest>=8.0
+pytest-asyncio>=1.0
+
+# Linting & type checking
+ruff>=0.4
+mypy>=1.10
