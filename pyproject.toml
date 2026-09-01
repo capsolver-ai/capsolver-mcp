@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling >= 1.27.0"]
 build-backend = "hatchling.build"
 
 [project]
@@ -7,10 +7,24 @@ name = "capsolver-mcp"
 version = "0.1.0"
 description = "MCP Server for CapSolver — expose captcha-solving capabilities to AI agents via Model Context Protocol."
 readme = "README.md"
-license = { file = "LICENSE" }
+license = "ISC"
+license-files = ["LICENSE"]
 requires-python = ">=3.10"
 keywords = ["capsolver", "captcha", "mcp", "model-context-protocol", "ai-agent"]
 authors = [{ name = "capsolver-ai", email = "dev@capsolver.ai" }]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
 dependencies = [
     "capsolver-core>=0.1.0",
     "mcp>=1.0.0",
@@ -31,15 +45,12 @@ dev = [
 Homepage = "https://capsolver.com"
 Repository = "https://github.com/capsolver-ai/mcp-capsolver"
 Issues = "https://github.com/capsolver-ai/mcp-capsolver/issues"
+Documentation = "https://github.com/capsolver-ai/mcp-capsolver/blob/main/docs/mcp-integration.md"
+Changelog = "https://github.com/capsolver-ai/mcp-capsolver/blob/main/CHANGELOG.md"
+Security = "https://github.com/capsolver-ai/mcp-capsolver/blob/main/SECURITY.md"
 
 [project.scripts]
 capsolver-mcp = "capsolver_mcp.__main__:main"
-
-# ── Development only ──────────────────────────────────────────
-# Remove this entire [tool.uv.sources] section before publishing to PyPI.
-# These local path overrides allow editable cross-repo development.
-[tool.uv.sources]
-capsolver-core = { path = "../capsolver-core" }
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/capsolver_mcp"]

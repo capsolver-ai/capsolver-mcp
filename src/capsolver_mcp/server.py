@@ -335,8 +335,8 @@ async def _launch_browser_session(page_url: str) -> Any:
 
     driver = from_playwright_page(page)
     # Stash references for cleanup
-    driver._pw = pw
-    driver._browser = browser
+    setattr(driver, "_pw", pw)
+    setattr(driver, "_browser", browser)
     return driver
 
 
