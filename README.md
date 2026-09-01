@@ -69,7 +69,7 @@ server.run(transport="sse")   # or "stdio" or "streamable-http"
 ```
 
 > **Note:** `host` and `port` are constructor parameters on `create_server()`
-> (forwarded to `FastMCP`), matching the MCP Python SDK (>=1.0) API.
+> (forwarded to `FastMCP`), matching the MCP Python SDK 1.x API.
 
 ## Configure in Claude Desktop
 

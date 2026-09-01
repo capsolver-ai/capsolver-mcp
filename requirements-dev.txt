@@ -4,7 +4,7 @@
 
 # Core
 capsolver-core>=0.1.0
-mcp>=1.0.0
+mcp>=1.0.0,<2
 
 # Browser (optional, needed for browser tools)
 playwright>=1.40
