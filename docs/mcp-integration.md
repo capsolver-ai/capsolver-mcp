@@ -9,7 +9,6 @@ For Python framework integrations (OpenAI, LangChain, LlamaIndex, etc.), see [ca
 Install and run in one command:
 
 ```bash
-# After publishing to PyPI:
 uvx capsolver-mcp
 
 # Or install globally:
