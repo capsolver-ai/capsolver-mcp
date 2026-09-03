@@ -14,7 +14,7 @@ Please do not open public issues for vulnerabilities, leaked credentials, or
 reports that include private target URLs, API keys, MCP client configuration,
 tool traces, or customer data.
 
-Report security issues by emailing `dev@capsolver.ai` with:
+Report security issues by emailing `support@capsolver.com` with:
 
 - The affected package and version.
 - A concise description of the issue.

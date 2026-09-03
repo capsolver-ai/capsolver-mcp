@@ -2,7 +2,7 @@
 
 MCP Server for [CapSolver](https://capsolver.com) — expose captcha-solving capabilities to AI agents via the [Model Context Protocol](https://modelcontextprotocol.io).
 
-See the [capsolver-ai](https://github.com/capsolver-ai/capsolver-ai) hub repo for integration examples and the full documentation.
+See the [capsolver-ai](https://github.com/capsolver-ai) hub repo for integration examples and the full documentation.
 
 For detailed MCP client setup (Claude Desktop, Claude Code, Cursor, Windsurf, Cline, and more), see [docs/mcp-integration.md](docs/mcp-integration.md).
 
@@ -108,8 +108,8 @@ playwright install chromium
 ## Development
 
 ```bash
-git clone https://github.com/capsolver-ai/mcp-capsolver.git
-cd mcp-capsolver
+git clone https://github.com/capsolver-ai/capsolver-mcp.git
+cd capsolver-mcp
 uv sync --all-extras          # or: pip install -r requirements-dev.txt
 uv run pytest                 # run tests
 uv run ruff check src tests   # lint
@@ -117,4 +117,4 @@ uv run ruff check src tests   # lint
 
 ## License
 
-ISC
+MIT

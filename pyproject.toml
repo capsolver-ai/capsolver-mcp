@@ -7,11 +7,11 @@ name = "capsolver-mcp"
 version = "0.1.0"
 description = "MCP Server for CapSolver — expose captcha-solving capabilities to AI agents via Model Context Protocol."
 readme = "README.md"
-license = "ISC"
+license = "MIT"
 license-files = ["LICENSE"]
 requires-python = ">=3.10"
 keywords = ["capsolver", "captcha", "mcp", "model-context-protocol", "ai-agent"]
-authors = [{ name = "capsolver-ai", email = "dev@capsolver.ai" }]
+authors = [{ name = "capsolver-ai", email = "support@capsolver.com" }]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -43,11 +43,11 @@ dev = [
 
 [project.urls]
 Homepage = "https://capsolver.com"
-Repository = "https://github.com/capsolver-ai/mcp-capsolver"
-Issues = "https://github.com/capsolver-ai/mcp-capsolver/issues"
-Documentation = "https://github.com/capsolver-ai/mcp-capsolver/blob/main/docs/mcp-integration.md"
-Changelog = "https://github.com/capsolver-ai/mcp-capsolver/blob/main/CHANGELOG.md"
-Security = "https://github.com/capsolver-ai/mcp-capsolver/blob/main/SECURITY.md"
+Repository = "https://github.com/capsolver-ai/capsolver-mcp"
+Issues = "https://github.com/capsolver-ai/capsolver-mcp/issues"
+Documentation = "https://github.com/capsolver-ai/capsolver-mcp/blob/main/docs/mcp-integration.md"
+Changelog = "https://github.com/capsolver-ai/capsolver-mcp/blob/main/CHANGELOG.md"
+Security = "https://github.com/capsolver-ai/capsolver-mcp/blob/main/SECURITY.md"
 
 [project.scripts]
 capsolver-mcp = "capsolver_mcp.__main__:main"

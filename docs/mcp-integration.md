@@ -2,7 +2,7 @@
 
 This guide covers how to connect the CapSolver MCP server to your AI development tools via the Model Context Protocol.
 
-For Python framework integrations (OpenAI, LangChain, LlamaIndex, etc.), see [capsolver-agent integration docs](https://github.com/capsolver-ai/agent-capsolver/blob/main/docs/agent-integration.md).
+For Python framework integrations (OpenAI, LangChain, LlamaIndex, etc.), see [capsolver-agent integration docs](https://github.com/capsolver-ai/capsolver-agent/blob/main/docs/agent-integration.md).
 
 ## Quick Start
 
