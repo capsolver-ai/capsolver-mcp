@@ -2,7 +2,7 @@
 
 MCP Server for [CapSolver](https://capsolver.com) — expose captcha-solving capabilities to AI agents via the [Model Context Protocol](https://modelcontextprotocol.io).
 
-See the [capsolver-ai](https://github.com/capsolver-ai) hub repo for integration examples and the full documentation.
+See the [capsolver-ai-hub](https://github.com/capsolver-ai/capsolver-ai-hub) repo for integration examples and the full documentation.
 
 For detailed MCP client setup (Claude Desktop, Claude Code, Cursor, Windsurf, Cline, and more), see [docs/mcp-integration.md](docs/mcp-integration.md).
 
@@ -90,13 +90,13 @@ Add to your `claude_desktop_config.json`:
 
 ## Available tools
 
-| Tool | Browser? | Description |
-|---|---|---|
-| `solve_captcha` | No | Solve a captcha by type + site params (token mode) |
-| `detect_captchas` | Yes | Scan a page URL and list present captcha types |
-| `solve_on_page` | Yes | Detect + solve + autofill all captchas on a page |
-| `get_balance` | No | Check account balance and packages |
-| `get_supported_captchas` | No | List all supported captcha types and handlers |
+| Tool                     | Browser? | Description                                        |
+|--------------------------|----------|----------------------------------------------------|
+| `solve_captcha`          | No       | Solve a captcha by type + site params (token mode) |
+| `detect_captchas`        | Yes      | Scan a page URL and list present captcha types     |
+| `solve_on_page`          | Yes      | Detect + solve + autofill all captchas on a page   |
+| `get_balance`            | No       | Check account balance and packages                 |
+| `get_supported_captchas` | No       | List all supported captcha types and handlers      |
 
 Browser-based tools (`detect_captchas`, `solve_on_page`) require the `browser` extra:
 
