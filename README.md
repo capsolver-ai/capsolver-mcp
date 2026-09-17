@@ -1,5 +1,7 @@
 # capsolver-mcp
 
+<!-- mcp-name: io.github.capsolver-ai/capsolver-mcp -->
+
 MCP Server for [CapSolver](https://capsolver.com) — expose captcha-solving capabilities to AI agents via the [Model Context Protocol](https://modelcontextprotocol.io).
 
 See the [capsolver-ai-hub](https://github.com/capsolver-ai/capsolver-ai-hub) repo for integration examples and the full documentation.

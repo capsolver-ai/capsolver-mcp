@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 This project follows semantic versioning where practical. Public releases are
 tagged in Git as `vX.Y.Z` and published to PyPI with the same version.
 
+## [0.1.2] - 2026-09-17
+
+### Added
+
+- Added `server.json` for MCP Registry publication (name, version, packages,
+  transport).
+- Added `mcp-name: io.github.capsolver-ai/capsolver-mcp` marker to README for
+  registry validation.
+- Added MCP Registry publishing steps to `PUBLISHING.md`.
+
 ## [0.1.1] - 2026-09-09
 
 ### Documentation

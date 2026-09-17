@@ -6,4 +6,4 @@ Supports both stdio (local) and SSE (remote) transports.
 from capsolver_mcp.server import create_server
 
 __all__ = ["create_server"]
-__version__ = "0.1.1"
+__version__ = "0.1.2"

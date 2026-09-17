@@ -8,7 +8,7 @@ Release `capsolver-core` first. This package depends on `capsolver-core`.
 Set the release version once before running the commands:
 
 ```powershell
-$version = "0.1.1"
+$version = "0.1.2"
 $package = "capsolver-mcp"
 $module = "capsolver_mcp"
 $command = "capsolver-mcp"
@@ -24,6 +24,10 @@ $command = "capsolver-mcp"
   this package is formally published.
 - `pyproject.toml` has `version = "$version"`.
 - `src/capsolver_mcp/__init__.py` exposes the same `__version__`.
+- `server.json` has the same `version` in both the top-level field and the
+  `packages[0].version` field.
+- `server.json` targets the current `server.schema.json` revision and uses
+  camelCase field names (see [MCP Registry](#mcp-registry) below).
 - `CHANGELOG.md` has a release entry for `$version` with the correct date.
 - The `mcp` dependency remains pinned to the MCP SDK 1.x line unless the code
   has been migrated to the 2.x API.
@@ -137,4 +141,95 @@ entry.
 Prefer PyPI Trusted Publishing from the official public GitHub repository for
 future releases. If manual upload is used, use a project-scoped PyPI API token
 instead of an account password.
+
+## MCP Registry
+
+MCP Registry publication is **independent of PyPI releases**. The two flows
+are decoupled:
+
+| Change type | PyPI release? | Registry update? |
+| --- | --- | --- |
+| Code / features / bug fixes | Yes | Yes (after PyPI) |
+| README or docs changes | Yes | No |
+| `server.json` metadata only (description, env vars) | No | Yes |
+| Dependency changes | Yes | Yes (after PyPI) |
+
+Registry validation checks that a `mcp-name: io.github.capsolver-ai/capsolver-mcp`
+line appears in the PyPI package description, which is built from `README.md`.
+The marker was first added in 0.1.2 and **must be kept in `README.md` for every
+future release** — removing it breaks package ownership validation on the next
+registry publish.
+
+### Prerequisites
+
+- `server.json` exists at the repository root, targets the current schema
+  revision, and uses camelCase field names. Field names moved from snake_case
+  to camelCase (`registry_type` → `registryType`, `environment_variables` →
+  `environmentVariables`, `website_url` → `websiteUrl`, `required` →
+  `isRequired`, …) and the publisher-set `status` field was removed — the
+  registry manages `status` itself. Documents using the older format are
+  rejected. Check the
+  [schema changelog](https://github.com/modelcontextprotocol/registry/blob/main/docs/reference/server-json/CHANGELOG.md)
+  before each release and update `$schema` when a newer revision ships.
+- `README.md` contains the `mcp-name:` marker matching the `name` field in
+  `server.json`.
+- The `mcp-publisher` CLI is installed:
+
+  ```powershell
+  $arch = if ([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture -eq "Arm64") { "arm64" } else { "amd64" }
+  Invoke-WebRequest -Uri "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_windows_$arch.tar.gz" -OutFile "mcp-publisher.tar.gz"
+  tar xf mcp-publisher.tar.gz mcp-publisher.exe
+  Remove-Item mcp-publisher.tar.gz
+  mcp-publisher --help
+  ```
+
+  On macOS/Linux use `brew install mcp-publisher` or the release tarball.
+- The publishing account can claim the namespace. `io.github.capsolver-ai/*`
+  requires authenticating as a member of the `capsolver-ai` GitHub
+  organization; a permission error means the account does not own the
+  namespace.
+- For full releases: the new PyPI version is live (the registry validates that
+  the package exists on PyPI and carries the marker).
+
+### Authenticate
+
+The registry JWT is short-lived. Log in again whenever `mcp-publisher publish`
+reports an invalid or expired token:
+
+```powershell
+mcp-publisher login github
+```
+
+This starts a GitHub device flow and prints a URL and a one-time code.
+
+### Full release (PyPI + Registry)
+
+Follow the PyPI release steps above, then after verifying the PyPI upload:
+
+1. Update `server.json` `version` (top-level and `packages[0].version`) to
+   match the new PyPI version.
+2. Run `mcp-publisher login github`, then `mcp-publisher publish`.
+3. Verify:
+   `curl "https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.capsolver-ai/capsolver-mcp"`
+4. Commit and push `server.json`.
+
+### Registry-only update (no PyPI release)
+
+When only `server.json` metadata changes (e.g. description, env vars):
+
+1. Edit `server.json` — no version bump needed if the PyPI package version
+   has not changed.
+2. Run `mcp-publisher login github`, then `mcp-publisher publish`.
+3. Commit and push `server.json`.
+
+### Notes
+
+- A "Registry validation failed for package" error means the ownership marker
+  is missing from the published PyPI description — republish to PyPI with the
+  marker in `README.md` before retrying.
+- Downstream registries (GitHub MCP Registry, mcp.so, etc.) pull from the
+  upstream registry automatically; no separate submission is needed.
+- The official registry is still in preview. Breaking schema changes and data
+  resets are possible, so re-check the schema revision and the API path before
+  each release.
 
