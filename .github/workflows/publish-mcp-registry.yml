@@ -1,0 +1,54 @@
+name: Publish to MCP Registry
+
+# Publishes server.json to the official MCP Registry.
+#
+# Authentication uses GitHub Actions OIDC rather than `mcp-publisher login
+# github`. The interactive device flow does not grant the
+# io.github.capsolver-ai/* namespace to org Owners (upstream bug: see
+# modelcontextprotocol/registry#1527, #1537, #1551). OIDC derives the namespace
+# from this repository's owner instead, so it is unaffected.
+#
+# The PyPI release is a separate, manual step (see PUBLISHING.md). This workflow
+# only registers metadata; the package must already be live on PyPI.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # required to mint the OIDC token
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Check server.json version matches the tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          tag="${GITHUB_REF#refs/tags/v}"
+          top=$(jq -r '.version' server.json)
+          pkg=$(jq -r '.packages[0].version' server.json)
+          echo "tag=$tag server.json=$top packages[0]=$pkg"
+          if [ "$tag" != "$top" ] || [ "$tag" != "$pkg" ]; then
+            echo "::error::server.json version does not match tag v$tag"
+            exit 1
+          fi
+
+      - name: Install mcp-publisher
+        run: |
+          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+
+      - name: Authenticate to MCP Registry
+        run: ./mcp-publisher login github-oidc
+
+      - name: Publish server to MCP Registry
+        run: ./mcp-publisher publish
+
+      - name: Verify registry entry
+        run: |
+          curl -sS "https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.capsolver-ai/capsolver-mcp"
