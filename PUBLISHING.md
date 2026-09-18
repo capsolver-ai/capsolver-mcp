@@ -22,10 +22,12 @@ $command = "capsolver-mcp"
   before this package is tested.
 - The matching `capsolver-core` release is already available on PyPI before
   this package is formally published.
-- `pyproject.toml` has `version = "$version"`.
-- `src/capsolver_mcp/__init__.py` exposes the same `__version__`.
+- `pyproject.toml` has `version = "$version"`. This is the single source of
+  truth: `capsolver_mcp.__version__` is derived from the installed package
+  metadata and must not be edited by hand.
 - `server.json` has the same `version` in both the top-level field and the
-  `packages[0].version` field.
+  `packages[0].version` field. `tests/test_version.py` checks this against the
+  installed package version, so `uv run pytest` catches drift before release.
 - `server.json` targets the current `server.schema.json` revision and uses
   camelCase field names (see [MCP Registry](#mcp-registry) below).
 - `CHANGELOG.md` has a release entry for `$version` with the correct date.
@@ -135,6 +137,10 @@ git push origin main
 git push origin "v$version"
 ```
 
+Pushing a `v*` tag also triggers the MCP Registry workflow, so commit the
+updated `server.json` **before** pushing the tag or the publish step fails its
+version check. See [MCP Registry](#mcp-registry) below.
+
 Create a GitHub Release for `v$version` using the matching `CHANGELOG.md`
 entry.
 
@@ -160,6 +166,12 @@ The marker was first added in 0.1.2 and **must be kept in `README.md` for every
 future release** — removing it breaks package ownership validation on the next
 registry publish.
 
+Registry publication runs from GitHub Actions, not from a local machine. The
+workflow is `.github/workflows/publish-mcp-registry.yml`; it authenticates with
+GitHub Actions OIDC and runs `mcp-publisher publish`. Do not publish with the
+local `mcp-publisher login github` device flow — see
+[Why OIDC and not a local login](#why-oidc-and-not-a-local-login) below.
+
 ### Prerequisites
 
 - `server.json` exists at the repository root, targets the current schema
@@ -173,34 +185,15 @@ registry publish.
   before each release and update `$schema` when a newer revision ships.
 - `README.md` contains the `mcp-name:` marker matching the `name` field in
   `server.json`.
-- The `mcp-publisher` CLI is installed:
-
-  ```powershell
-  $arch = if ([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture -eq "Arm64") { "arm64" } else { "amd64" }
-  Invoke-WebRequest -Uri "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_windows_$arch.tar.gz" -OutFile "mcp-publisher.tar.gz"
-  tar xf mcp-publisher.tar.gz mcp-publisher.exe
-  Remove-Item mcp-publisher.tar.gz
-  mcp-publisher --help
-  ```
-
-  On macOS/Linux use `brew install mcp-publisher` or the release tarball.
-- The publishing account can claim the namespace. `io.github.capsolver-ai/*`
-  requires authenticating as a member of the `capsolver-ai` GitHub
-  organization; a permission error means the account does not own the
-  namespace.
+- The workflow is present on the default branch of the official repository.
+  OIDC derives the namespace from the repository owner, so the workflow must
+  run in `capsolver-ai/capsolver-mcp` to claim `io.github.capsolver-ai/*`.
+- GitHub Actions is enabled for the repository and the organization.
 - For full releases: the new PyPI version is live (the registry validates that
   the package exists on PyPI and carries the marker).
 
-### Authenticate
-
-The registry JWT is short-lived. Log in again whenever `mcp-publisher publish`
-reports an invalid or expired token:
-
-```powershell
-mcp-publisher login github
-```
-
-This starts a GitHub device flow and prints a URL and a one-time code.
+No secrets or tokens are needed. The workflow requests `id-token: write` and
+GitHub mints the OIDC token at run time.
 
 ### Full release (PyPI + Registry)
 
@@ -208,10 +201,16 @@ Follow the PyPI release steps above, then after verifying the PyPI upload:
 
 1. Update `server.json` `version` (top-level and `packages[0].version`) to
    match the new PyPI version.
-2. Run `mcp-publisher login github`, then `mcp-publisher publish`.
-3. Verify:
+2. Commit and push `server.json`.
+3. Push the release tag: `git push origin "v$version"`. The workflow triggers
+   on `v*` tags and fails fast if the tag does not match both version fields
+   in `server.json`.
+4. Verify:
    `curl "https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.capsolver-ai/capsolver-mcp"`
-4. Commit and push `server.json`.
+
+If the tag was already pushed before `server.json` was ready, trigger the
+workflow manually instead: Actions → "Publish to MCP Registry" → Run workflow.
+A tag push event is not replayed.
 
 ### Registry-only update (no PyPI release)
 
@@ -219,8 +218,30 @@ When only `server.json` metadata changes (e.g. description, env vars):
 
 1. Edit `server.json` — no version bump needed if the PyPI package version
    has not changed.
-2. Run `mcp-publisher login github`, then `mcp-publisher publish`.
-3. Commit and push `server.json`.
+2. Commit and push `server.json`.
+3. Actions → "Publish to MCP Registry" → Run workflow on `main`.
+
+### Why OIDC and not a local login
+
+`mcp-publisher login github` grants only the personal namespace
+(`io.github.<user>/*`) and never the organization namespace, so publishing
+`io.github.capsolver-ai/capsolver-mcp` from a local shell fails with a 403.
+This is an upstream defect, not a misconfiguration: public organization
+membership, Owner role, and organization third-party access policy all make no
+difference. Confirmed during the 0.1.2 release; see
+[#1527](https://github.com/modelcontextprotocol/registry/issues/1527),
+[#1537](https://github.com/modelcontextprotocol/registry/issues/1537), and
+[#1551](https://github.com/modelcontextprotocol/registry/issues/1551).
+
+The device flow authenticates against a private GitHub App that holds no
+organization-member read permission, so the registry's org-role lookup
+(`GET /user/memberships/orgs`) is rejected and the server silently degrades to
+"no admin orgs". OIDC does not use that code path at all — it reads the
+`repository_owner` claim from the Actions token and grants
+`io.github.<owner>/*` directly.
+
+If the local flow is ever fixed upstream, it can be used for registry-only
+metadata updates. Until then, treat Actions as the only supported path.
 
 ### Notes
 

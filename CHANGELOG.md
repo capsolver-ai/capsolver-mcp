@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 This project follows semantic versioning where practical. Public releases are
 tagged in Git as `vX.Y.Z` and published to PyPI with the same version.
 
+## [Unreleased]
+
+### Added
+
+- GitHub Actions workflow that publishes `server.json` to the MCP Registry
+  using Actions OIDC, triggered by `v*` tags or manual dispatch.
+- `tests/test_version.py`, which checks that `server.json` agrees with the
+  package version and that the `mcp-name:` registry marker is still in
+  `README.md`.
+
+### Changed
+
+- `capsolver_mcp.__version__` is now read from the installed package metadata
+  instead of being hard-coded, making `pyproject.toml` the single source of
+  truth for the release version.
+
+### Documentation
+
+- Rewrote the MCP Registry section of `PUBLISHING.md` around the Actions
+  workflow. The local `mcp-publisher login github` device flow cannot claim the
+  organization namespace, so it is no longer part of the release process.
+- Noted the official MCP Registry listing in `README.md`.
+
 ## [0.1.2] - 2026-09-17
 
 ### Added

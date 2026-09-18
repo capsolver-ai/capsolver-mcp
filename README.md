@@ -4,6 +4,8 @@
 
 MCP Server for [CapSolver](https://capsolver.com) — expose captcha-solving capabilities to AI agents via the [Model Context Protocol](https://modelcontextprotocol.io).
 
+Published on PyPI as [`capsolver-mcp`](https://pypi.org/project/capsolver-mcp/) and listed in the official [MCP Registry](https://registry.modelcontextprotocol.io) as `io.github.capsolver-ai/capsolver-mcp`.
+
 See the [capsolver-ai-hub](https://github.com/capsolver-ai/capsolver-ai-hub) repo for integration examples and the full documentation.
 
 For detailed MCP client setup (Claude Desktop, Claude Code, Cursor, Windsurf, Cline, and more), see [docs/mcp-integration.md](docs/mcp-integration.md).
@@ -89,6 +91,11 @@ Add to your `claude_desktop_config.json`:
   }
 }
 ```
+
+To run without installing it globally, use `"command": "uvx"` with
+`"args": ["capsolver-mcp"]` — this is what MCP clients generate from the
+registry entry. See [docs/mcp-integration.md](docs/mcp-integration.md) for
+per-client examples.
 
 ## Available tools
 
