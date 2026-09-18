@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 This project follows semantic versioning where practical. Public releases are
 tagged in Git as `vX.Y.Z` and published to PyPI with the same version.
 
-## [Unreleased]
+## [0.1.3] - 2026-09-18
 
 ### Added
 
