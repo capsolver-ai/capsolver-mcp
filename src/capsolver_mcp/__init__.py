@@ -1,4 +1,4 @@
-"""CapSolver MCP Server — expose captcha-solving capabilities via Model Context Protocol.
+"""capsolver-mcp Server — expose captcha-solving capabilities via Model Context Protocol.
 
 Supports both stdio (local) and SSE (remote) transports.
 """

@@ -1,42 +1,34 @@
-# MCP Client Configuration Guide
+# capsolver-mcp installation and configuration
 
-This guide covers how to connect the CapSolver MCP server to your AI development tools via the Model Context Protocol.
+capsolver-mcp separates the CapSolver API from browser work. Use the core
+service for task discovery, solving and recognition. Add one independent browser
+service if the client needs to read a challenge from a live page or apply a result.
 
-For Python framework integrations (OpenAI, LangChain, LlamaIndex, etc.), see [capsolver-agent integration docs](https://github.com/capsolver-ai/capsolver-agent/blob/main/docs/agent-integration.md).
+## Install the core server
 
-## Quick Start
+Use Python 3.10 or newer. Install the package in the Python environment used by your MCP client.
 
-Install and run in one command:
-
-```bash
-uvx capsolver-mcp
-
-# Or install globally:
-pip install capsolver-mcp
-capsolver-mcp
+```sh
+python -m pip install --upgrade capsolver-mcp
 ```
 
-Set your API key:
+From the extracted release source, create a fresh environment and install it:
 
-```bash
-export CAPSOLVER_API_KEY="CAP-XXXXXX"
+```sh
+python3 -m venv .venv
+.venv/bin/python -m pip install .
+.venv/bin/python -m capsolver_mcp --help
 ```
 
-That's it. The MCP server starts in **stdio** mode, ready for any MCP client to connect.
+On Windows use `py -3 -m venv .venv` and
+`.\.venv\Scripts\python.exe` in place of `.venv/bin/python`.
+Choose a Python 3.10 or newer executable if the system default is older.
 
----
+## Connect over STDIO
 
-## MCP Client Configurations
-
-All clients below use the same JSON structure. The only difference is **where** the config file lives.
-
-### Claude Desktop
-
-| Platform | Config Path |
-|----------|-------------|
-| macOS | `~/Library/Application Support/Claude/claude_desktop_config.json` |
-| Windows | `%APPDATA%\Claude\claude_desktop_config.json` |
-| Linux | `~/.config/Claude/claude_desktop_config.json` |
+In a client that accepts an `mcpServers` object, use this STDIO
+configuration. In your local client settings, replace `YOUR_API_KEY` with your
+actual CapSolver API key.
 
 ```json
 {
@@ -44,225 +36,78 @@ All clients below use the same JSON structure. The only difference is **where** 
     "capsolver": {
       "command": "capsolver-mcp",
       "env": {
-        "CAPSOLVER_API_KEY": "CAP-XXXXXX"
+        "CAPSOLVER_API_KEY": "YOUR_API_KEY"
       }
     }
   }
 }
 ```
 
-Or use `uvx` (no global install needed):
+The client passes `env.CAPSOLVER_API_KEY` to the core process at startup.
+An explicit `--api-key` takes precedence over the environment value.
+If the client cannot find `capsolver-mcp`, set `command` to the executable's
+absolute path in your Python environment. The independent browser MCP and
+offline mode require no CapSolver API key.
 
-```json
-{
-  "mcpServers": {
-    "capsolver": {
-      "command": "uvx",
-      "args": ["capsolver-mcp"],
-      "env": {
-        "CAPSOLVER_API_KEY": "CAP-XXXXXX"
-      }
-    }
-  }
-}
+To launch with uvx, set `command` to `"uvx"` and `args` to `["capsolver-mcp"]`. Use
+the same `env.CAPSOLVER_API_KEY` setting.
+
+For Codex, from the source checkout on macOS or Linux:
+
+```sh
+codex mcp add capsolver-mcp \
+  --env 'CAPSOLVER_API_KEY=YOUR_API_KEY' \
+  -- "$PWD/.venv/bin/python" -m capsolver_mcp
+codex mcp list
 ```
 
-After saving, restart Claude Desktop. The capsolver tools will appear automatically.
+Reconnect the client and call `get_account_balance`. A live response returns
+`ok: true`, `execution_mode: provider`, and a numeric `account.balance`.
+With no key set, the core can still connect and list tools. Calls that access
+CapSolver return `Configure CAPSOLVER_API_KEY first.`. For a simulated
+connection, pass `--offline`. The balance call reports
+`execution_mode: offline_simulated`.
 
-### Claude Code (CLI)
+## Choose a browser service
 
-Add via command line:
+- **Python browser (13 tools):** install the browser extra in the same environment
+  (`.venv/bin/python -m pip install '.[browser]'` from source, or
+  `python -m pip install --upgrade 'capsolver-mcp[browser]'` from PyPI).
+  Run `python -m playwright install chromium` with that environment's Python.
+  Add a separate STDIO entry with that Python and
+  `["-m", "capsolver_mcp.browser_server"]` as arguments.
+- **Patchright browser (66 native tools; 79 with the workflow):** use Node.js
+  22 and Google Chrome. Build from the release source with `npm ci --ignore-scripts`
+  and `npm run build` inside `browser-patchright`, or install the release
+  tarball into a local Node project. Configure STDIO with `node` and the
+  absolute path to `dist/index.js`. To enable the CapSolver workflow, append
+  `--workflow-python` and the absolute path to the installed core Python.
+  Start the browser, attach the active tab with `capsolver_browser_attach`,
+  and use the returned IDs for the prefixed workflow tools.
 
-```bash
-claude mcp add capsolver -e CAPSOLVER_API_KEY=CAP-XXXXXX -- uvx capsolver-mcp
-```
+The [official Registry entry](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.capsolver-ai%2Fcapsolver-mcp/versions/latest)
+describes the core PyPI STDIO package.
 
-Or edit `~/.claude.json` directly:
+## Choose a tool and read the result
 
-```json
-{
-  "mcpServers": {
-    "capsolver": {
-      "type": "stdio",
-      "command": "uvx",
-      "args": ["capsolver-mcp"],
-      "env": {
-        "CAPSOLVER_API_KEY": "CAP-XXXXXX"
-      }
-    }
-  }
-}
-```
+| Stage | Tools | Check |
+| --- | --- | --- |
+| Connect | `get_account_balance` (`get_balance` alias) | Account and execution mode |
+| Discover | `list_task_types`, `get_supported_tasks`, `get_task_schema`, `get_task_parameters` | Exact task type, required fields, endpoint, proxy policy |
+| Read references | `get_docs`, `refresh_task_catalog` | Official references when online; packaged guidance via `get_docs(topic="agent")` |
+| Submit | `create_task`, or `get_token` for eligible reCAPTCHA types | Generate and save a unique `request_id` before submitting and pass it to the tool. Some recognition tasks return immediately. |
+| Wait | `get_task_result`, `wait_for_result`, `get_task_result_wait` | Poll the existing `task_id` if `state: processing`; timeouts are in seconds. |
+| Read returned User-Agent | `get_actual_user_agent(task_id=...)` | Exact `solution.userAgent` from an existing task of any type, or `null` when the ready response omits it. Omit `task_id` for the documented DataDome lookup. |
+| Recover | `get_request_status` | Look up the original request, especially after a lost response. |
 
-Manage servers:
+A successful provider response has `state: ready` and a `solution`. In a
+browser flow, call `browser_prepare_captcha` to get the task and prepared
+challenge ID, solve it on the core service, then use `browser_apply_solution`
+on the original page. If CapSolver returns `solution.userAgent`, the
+`analyze_and_solve` prompt requires the Agent to use that exact User-Agent
+when applying or submitting the token. If the current session cannot use
+it, the Agent reports the mismatch and leaves the page untouched. Verify
+a site-specific success marker or business response after submission.
 
-```bash
-claude mcp list        # view configured servers
-claude mcp remove capsolver  # remove
-```
-
-### Cursor
-
-| Scope | Config Path |
-|-------|-------------|
-| Global | `~/.cursor/mcp.json` |
-| Project | `.cursor/mcp.json` |
-
-```json
-{
-  "mcpServers": {
-    "capsolver": {
-      "command": "uvx",
-      "args": ["capsolver-mcp"],
-      "env": {
-        "CAPSOLVER_API_KEY": "CAP-XXXXXX"
-      }
-    }
-  }
-}
-```
-
-Or configure via UI: **Settings → Tools & MCP → New MCP Server**.
-
-> **Windows note:** If `uvx` or `npx` doesn't work directly, use:
-> ```json
-> {
->   "command": "cmd",
->   "args": ["/c", "uvx", "capsolver-mcp"],
->   "env": { "CAPSOLVER_API_KEY": "CAP-XXXXXX" }
-> }
-> ```
-
-### Windsurf
-
-| Platform | Config Path |
-|----------|-------------|
-| macOS | `~/.codeium/windsurf/mcp_config.json` |
-| Windows | `%USERPROFILE%\.codeium\windsurf\mcp_config.json` |
-
-```json
-{
-  "mcpServers": {
-    "capsolver": {
-      "command": "uvx",
-      "args": ["capsolver-mcp"],
-      "env": {
-        "CAPSOLVER_API_KEY": "CAP-XXXXXX"
-      }
-    }
-  }
-}
-```
-
-Or via UI: `Cmd/Ctrl + Shift + P` → **MCP: Add Server**.
-
-### Cline (VS Code Extension)
-
-Open VS Code settings → search "Cline MCP" → edit `cline_mcp_settings.json`:
-
-```json
-{
-  "mcpServers": {
-    "capsolver": {
-      "command": "uvx",
-      "args": ["capsolver-mcp"],
-      "env": {
-        "CAPSOLVER_API_KEY": "CAP-XXXXXX"
-      }
-    }
-  }
-}
-```
-
-### Remote / HTTP Mode (Any Client)
-
-For clients that support HTTP transport (Cursor, Windsurf, Cline, etc.), start the server in SSE or streamable-http mode:
-
-```bash
-# SSE transport
-capsolver-mcp --transport sse --host 0.0.0.0 --port 8000
-
-# Streamable HTTP (MCP 2025-03-26 spec)
-capsolver-mcp --transport streamable-http --host 0.0.0.0 --port 8000
-```
-
-Then configure the client with the URL:
-
-```json
-{
-  "mcpServers": {
-    "capsolver": {
-      "url": "http://localhost:8000/sse"
-    }
-  }
-}
-```
-
-For remote SSE via proxy (when the server is behind a network boundary):
-
-```json
-{
-  "mcpServers": {
-    "capsolver": {
-      "command": "npx",
-      "args": ["mcp-remote", "https://your-server.com/sse"]
-    }
-  }
-}
-```
-
----
-
-## Available Tools
-
-Once connected, any MCP client gets access to these 5 tools:
-
-| Tool | Browser? | Description |
-|------|----------|-------------|
-| `solve_captcha` | No | Solve a captcha by type + site params (token mode) |
-| `detect_captchas` | Yes | Scan a page URL and list present captcha types |
-| `solve_on_page` | Yes | Detect + solve + autofill all captchas on a page |
-| `get_balance` | No | Check account balance and packages |
-| `get_supported_captchas` | No | List all supported captcha types and handlers |
-
-Browser-based tools require `pip install capsolver-mcp[browser]` and `playwright install chromium`.
-
----
-
-## Programmatic MCP Server
-
-For embedding the MCP server in your own application:
-
-```python
-from capsolver_mcp.server import create_server
-
-server = create_server(
-    api_key="your-key",
-    server_name="capsolver",
-    host="127.0.0.1",
-    port=8000,
-)
-server.run(transport="streamable-http")
-```
-
----
-
-## Troubleshooting
-
-**"command not found: capsolver-mcp"**
-Install first: `pip install capsolver-mcp` or use `uvx capsolver-mcp`.
-
-**"CAPSOLVER_API_KEY is not set"**
-Add `"env": {"CAPSOLVER_API_KEY": "CAP-XXXXXX"}` to your MCP config.
-
-**Server connects but tools return errors**
-Check your API key is valid and has balance: `capsolver balance`.
-
-**Browser tools fail with "playwright is required"**
-Install browser support: `pip install capsolver-mcp[browser]` then `playwright install chromium`.
-
-**Windows: command fails to execute**
-Use `cmd /c` wrapper:
-```json
-{ "command": "cmd", "args": ["/c", "capsolver-mcp"] }
-```
+See [coverage](coverage.md), [migration from 0.1.x](migration.md), and the
+[troubleshooting guide](troubleshooting.md).

@@ -1,0 +1,3356 @@
+{
+  "schema_version": 1,
+  "reviewed_on": "2026-11-09",
+  "tasks": [
+    {
+      "task_type": "ImageToTextTask",
+      "category_id": "ocr_recognition",
+      "proxy_policy": "not_required",
+      "endpoints": [
+        "createTask"
+      ],
+      "response_mode": "synchronous",
+      "documentation_issues": [],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "type": {
+            "const": "ImageToTextTask"
+          },
+          "body": {
+            "type": "string",
+            "minLength": 1,
+            "format": "base64-image",
+            "maxLength": 12000000
+          },
+          "module": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "common",
+              "number"
+            ]
+          },
+          "images": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 9,
+            "items": {
+              "type": "string",
+              "format": "base64-image"
+            }
+          },
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "additionalProperties": true,
+        "allOf": [
+          {
+            "if": {
+              "required": [
+                "module"
+              ],
+              "properties": {
+                "module": {
+                  "const": "number"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "images"
+              ]
+            },
+            "else": {
+              "required": [
+                "body"
+              ]
+            }
+          }
+        ]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "text": {},
+          "answers": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "common",
+          "task": {
+            "type": "ImageToTextTask",
+            "websiteURL": "https://example.com/captcha",
+            "module": "common",
+            "body": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jMZ0AAAAASUVORK5CYII="
+          },
+          "purpose": "template_not_a_live_fixture"
+        },
+        {
+          "variant": "number",
+          "task": {
+            "type": "ImageToTextTask",
+            "websiteURL": "https://example.com/captcha",
+            "module": "number",
+            "images": [
+              "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jMZ0AAAAASUVORK5CYII="
+            ]
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/recognition/ImageToTextTask/",
+      "notes": [
+        "common/default uses body; number uses images (up to 9). Docs mark body required but batch example omits it; use conditional requirements."
+      ],
+      "browser_adapter": "ocr",
+      "test_resources": [
+        "readable image fixture",
+        "number image batch",
+        "form image/input selectors",
+        "backend acceptance condition"
+      ]
+    },
+    {
+      "task_type": "ReCaptchaV2Classification",
+      "category_id": "recaptcha_recognition",
+      "proxy_policy": "not_required",
+      "endpoints": [
+        "createTask"
+      ],
+      "response_mode": "synchronous",
+      "documentation_issues": [],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "type": {
+            "const": "ReCaptchaV2Classification"
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "/m/0pg52",
+              "/m/01bjv",
+              "/m/02yvhj",
+              "/m/04_sv",
+              "/m/013xlm",
+              "/m/01jk_4",
+              "/m/014xcs",
+              "/m/015qff",
+              "/m/0199g",
+              "/m/015qbp",
+              "/m/0k4j",
+              "/m/015kr",
+              "/m/019jd",
+              "/m/0cdl1",
+              "/m/09d_r",
+              "/m/01pns0",
+              "/m/01lynh"
+            ]
+          },
+          "websiteKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "image": {
+            "type": "string",
+            "minLength": 1,
+            "format": "base64-image",
+            "maxLength": 12000000
+          },
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          }
+        },
+        "required": [
+          "type",
+          "image",
+          "question"
+        ],
+        "additionalProperties": true
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "type": {},
+          "objects": {},
+          "hasObject": {},
+          "size": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "default",
+          "task": {
+            "type": "ReCaptchaV2Classification",
+            "image": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jMZ0AAAAASUVORK5CYII=",
+            "question": "/m/0k4j",
+            "websiteURL": "https://example.com/captcha",
+            "websiteKey": "EXAMPLE_SITE_KEY"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/recognition/ReCaptchaClassification/",
+      "notes": [],
+      "browser_adapter": "recaptcha_image",
+      "test_resources": [
+        "single and grid challenge images",
+        "supported question ID",
+        "controlled challenge frame and click mapping"
+      ]
+    },
+    {
+      "task_type": "AwsWafClassification",
+      "category_id": "aws_recognition",
+      "proxy_policy": "not_required",
+      "endpoints": [
+        "createTask"
+      ],
+      "response_mode": "synchronous",
+      "documentation_issues": [
+        "AWS-QUESTIONS"
+      ],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "images": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 9,
+            "items": {
+              "type": "string",
+              "format": "base64-image"
+            }
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "aws:toycarcity:carcity",
+              "aws:grid:bag",
+              "aws:grid:bed",
+              "aws:grid:belts",
+              "aws:grid:binocular",
+              "aws:grid:bucket",
+              "aws:grid:chair",
+              "aws:grid:clock",
+              "aws:grid:cooking pot",
+              "aws:grid:curtain",
+              "aws:grid:fork",
+              "aws:grid:hat",
+              "aws:grid:scissors",
+              "aws:grid:seat",
+              "aws:grid:spoon",
+              "aws:grid:suitcase",
+              "aws:grid:umbrella"
+            ]
+          },
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "type": {
+            "const": "AwsWafClassification"
+          }
+        },
+        "required": [
+          "type",
+          "images",
+          "question"
+        ],
+        "additionalProperties": true
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "box": {},
+          "objects": {},
+          "distance": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "default",
+          "task": {
+            "type": "AwsWafClassification",
+            "images": [
+              "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jMZ0AAAAASUVORK5CYII="
+            ],
+            "question": "aws:toycarcity:carcity",
+            "websiteURL": "https://example.com/captcha"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/recognition/AwsWafClassification/",
+      "notes": [
+        "Response mentions bifurcatedzoo distance although it is absent from the visible question allowlist; confirm before advertising that question."
+      ],
+      "browser_adapter": "aws_image",
+      "test_resources": [
+        "supported AWS challenge images and question",
+        "nine images for grid, one for other documented forms",
+        "controlled click/drag page"
+      ]
+    },
+    {
+      "task_type": "VisionEngine",
+      "category_id": "vision_recognition",
+      "proxy_policy": "not_required",
+      "endpoints": [
+        "createTask"
+      ],
+      "response_mode": "synchronous",
+      "documentation_issues": [
+        "VISION-CONDITIONS"
+      ],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "type": {
+            "const": "VisionEngine"
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1
+          },
+          "module": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "botdeflector",
+              "slider_1",
+              "rotate_1",
+              "rotate_2",
+              "shein",
+              "ocr_gif"
+            ]
+          },
+          "image": {
+            "type": "string",
+            "minLength": 1,
+            "format": "base64-image",
+            "maxLength": 12000000
+          },
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "imageBackground": {
+            "type": "string",
+            "minLength": 1,
+            "format": "base64-image",
+            "maxLength": 12000000
+          }
+        },
+        "required": [
+          "type",
+          "module",
+          "image"
+        ],
+        "additionalProperties": true,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "module": {
+                  "enum": [
+                    "botdeflector",
+                    "slider_1",
+                    "rotate_1"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "imageBackground"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "module": {
+                  "const": "shein"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "question"
+              ]
+            }
+          }
+        ]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "points": {},
+          "distance": {},
+          "angle": {},
+          "rects": {},
+          "text": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "botdeflector",
+          "task": {
+            "type": "VisionEngine",
+            "module": "botdeflector",
+            "image": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jMZ0AAAAASUVORK5CYII=",
+            "websiteURL": "https://example.com/captcha",
+            "imageBackground": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jMZ0AAAAASUVORK5CYII="
+          },
+          "purpose": "template_not_a_live_fixture"
+        },
+        {
+          "variant": "slider_1",
+          "task": {
+            "type": "VisionEngine",
+            "module": "slider_1",
+            "image": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jMZ0AAAAASUVORK5CYII=",
+            "websiteURL": "https://example.com/captcha",
+            "imageBackground": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jMZ0AAAAASUVORK5CYII="
+          },
+          "purpose": "template_not_a_live_fixture"
+        },
+        {
+          "variant": "rotate_1",
+          "task": {
+            "type": "VisionEngine",
+            "module": "rotate_1",
+            "image": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jMZ0AAAAASUVORK5CYII=",
+            "websiteURL": "https://example.com/captcha",
+            "imageBackground": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jMZ0AAAAASUVORK5CYII="
+          },
+          "purpose": "template_not_a_live_fixture"
+        },
+        {
+          "variant": "rotate_2",
+          "task": {
+            "type": "VisionEngine",
+            "module": "rotate_2",
+            "image": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jMZ0AAAAASUVORK5CYII=",
+            "websiteURL": "https://example.com/captcha"
+          },
+          "purpose": "template_not_a_live_fixture"
+        },
+        {
+          "variant": "shein",
+          "task": {
+            "type": "VisionEngine",
+            "module": "shein",
+            "image": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jMZ0AAAAASUVORK5CYII=",
+            "websiteURL": "https://example.com/captcha",
+            "question": "Select the matching shapes in order"
+          },
+          "purpose": "template_not_a_live_fixture"
+        },
+        {
+          "variant": "ocr_gif",
+          "task": {
+            "type": "VisionEngine",
+            "module": "ocr_gif",
+            "image": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+            "websiteURL": "https://example.com/captcha"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/recognition/VisionEngine/",
+      "notes": [
+        "imageBackground is required in the generic table but omitted in rotate_2, shein and ocr_gif examples. shein requires question in prose. Keep requirements per module."
+      ],
+      "browser_adapter": "vision",
+      "test_resources": [
+        "module-specific image fixtures",
+        "background images when required",
+        "page coordinate scaling and interaction targets",
+        "expected result or backend success"
+      ]
+    },
+    {
+      "task_type": "GeeTestTaskProxyLess",
+      "category_id": "geetest",
+      "proxy_policy": "not_required",
+      "endpoints": [
+        "createTask",
+        "getTaskResult"
+      ],
+      "response_mode": "asynchronous",
+      "documentation_issues": [
+        "GEETEST-CASING",
+        "GEETEST-CONDITIONS"
+      ],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "captchaId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "challenge": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "const": "GeeTestTaskProxyLess"
+          },
+          "gt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "geetestApiServerSubdomain": {
+            "type": "string",
+            "minLength": 1
+          },
+          "riskType": {
+            "type": "string",
+            "minLength": 1
+          },
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          }
+        },
+        "required": [
+          "type",
+          "websiteURL"
+        ],
+        "additionalProperties": true,
+        "allOf": [
+          {
+            "oneOf": [
+              {
+                "required": [
+                  "gt",
+                  "challenge"
+                ],
+                "not": {
+                  "required": [
+                    "captchaId"
+                  ]
+                }
+              },
+              {
+                "required": [
+                  "captchaId"
+                ],
+                "not": {
+                  "anyOf": [
+                    {
+                      "required": [
+                        "gt"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "challenge"
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "challenge": {},
+          "validate": {},
+          "seccode": {},
+          "userAgent": {},
+          "captcha_id": {},
+          "captcha_output": {},
+          "gen_time": {},
+          "lot_number": {},
+          "pass_token": {},
+          "risk_type": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "v3",
+          "task": {
+            "type": "GeeTestTaskProxyLess",
+            "websiteURL": "https://example.com/captcha",
+            "gt": "EXAMPLE_GT",
+            "challenge": "FRESH_CHALLENGE_REQUIRED"
+          },
+          "purpose": "template_not_a_live_fixture"
+        },
+        {
+          "variant": "v4",
+          "task": {
+            "type": "GeeTestTaskProxyLess",
+            "websiteURL": "https://example.com/captcha",
+            "captchaId": "EXAMPLE_CAPTCHA_ID"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/captcha/Geetest/",
+      "notes": [
+        "v3 requires gt and challenge; v4 requires captchaId. riskType is optional in the v4 example but described as required in the table.",
+        "One canonical entry provisionally uses the type-list spelling; conflicting example spelling is not a second supported task type. Do not retry another spelling after a paid submission."
+      ],
+      "browser_adapter": "geetest",
+      "test_resources": [
+        "fresh v3 gt and challenge pair",
+        "v4 captchaId and live challenge",
+        "controlled server validation for each version"
+      ]
+    },
+    {
+      "task_type": "ReCaptchaV2Task",
+      "category_id": "recaptcha_v2",
+      "proxy_policy": "required",
+      "endpoints": [
+        "createTask",
+        "getTaskResult",
+        "getToken"
+      ],
+      "response_mode": "asynchronous",
+      "documentation_issues": [
+        "V2-LIST"
+      ],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "pageAction": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "const": "ReCaptchaV2Task"
+          },
+          "apiDomain": {
+            "type": "string",
+            "minLength": 1
+          },
+          "isInvisible": {
+            "type": "boolean"
+          },
+          "enterprisePayload": {
+            "type": "object",
+            "properties": {
+              "s": {
+                "type": "string"
+              }
+            }
+          },
+          "websiteKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "isSession": {
+            "type": "boolean"
+          },
+          "cookies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "value"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "value": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "recaptchaDataSValue": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxy": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyType": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "http",
+              "https",
+              "socks4",
+              "socks5"
+            ]
+          },
+          "proxyAddress": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyLogin": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyPassword": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyPort": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 65535
+          }
+        },
+        "required": [
+          "type",
+          "websiteURL",
+          "websiteKey"
+        ],
+        "additionalProperties": true,
+        "allOf": [
+          {
+            "$comment": "proxy fields provided at solver submission",
+            "oneOf": [
+              {
+                "required": [
+                  "proxy"
+                ],
+                "not": {
+                  "required": [
+                    "proxyAddress"
+                  ]
+                }
+              },
+              {
+                "required": [
+                  "proxyType",
+                  "proxyAddress",
+                  "proxyPort"
+                ],
+                "not": {
+                  "required": [
+                    "proxy"
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "gRecaptchaResponse": {},
+          "userAgent": {},
+          "secChUa": {},
+          "createTime": {},
+          "recaptcha-ca-t": {},
+          "recaptcha-ca-e": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "default",
+          "task": {
+            "type": "ReCaptchaV2Task",
+            "websiteURL": "https://example.com/captcha",
+            "websiteKey": "EXAMPLE_SITE_KEY",
+            "proxy": "http:127.0.0.1:8080:example-user:example-password"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/captcha/ReCaptchaV2/",
+      "notes": [
+        "ReCaptchaV2Task appears in official request and getToken docs but is missing from the page type list.",
+        "cookies is documented separately and not universally supported. min_score in the legacy interface has no documented field equivalent here."
+      ],
+      "browser_adapter": "recaptcha",
+      "test_resources": [
+        "real standard and Enterprise widgets",
+        "invisible and session fixtures",
+        "valid proxy for proxy variants",
+        "backend validation and form acceptance"
+      ]
+    },
+    {
+      "task_type": "ReCaptchaV2TaskProxyLess",
+      "category_id": "recaptcha_v2",
+      "proxy_policy": "provider_managed",
+      "endpoints": [
+        "createTask",
+        "getTaskResult",
+        "getToken"
+      ],
+      "response_mode": "asynchronous",
+      "documentation_issues": [],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "pageAction": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "const": "ReCaptchaV2TaskProxyLess"
+          },
+          "apiDomain": {
+            "type": "string",
+            "minLength": 1
+          },
+          "isInvisible": {
+            "type": "boolean"
+          },
+          "enterprisePayload": {
+            "type": "object",
+            "properties": {
+              "s": {
+                "type": "string"
+              }
+            }
+          },
+          "websiteKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "isSession": {
+            "type": "boolean"
+          },
+          "cookies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "value"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "value": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "recaptchaDataSValue": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "type",
+          "websiteURL",
+          "websiteKey"
+        ],
+        "additionalProperties": true
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "gRecaptchaResponse": {},
+          "userAgent": {},
+          "secChUa": {},
+          "createTime": {},
+          "recaptcha-ca-t": {},
+          "recaptcha-ca-e": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "default",
+          "task": {
+            "type": "ReCaptchaV2TaskProxyLess",
+            "websiteURL": "https://example.com/captcha",
+            "websiteKey": "EXAMPLE_SITE_KEY"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/captcha/ReCaptchaV2/",
+      "notes": [
+        "ReCaptchaV2Task appears in official request and getToken docs but is missing from the page type list.",
+        "cookies is documented separately and not universally supported. min_score in the legacy interface has no documented field equivalent here."
+      ],
+      "browser_adapter": "recaptcha",
+      "test_resources": [
+        "real standard and Enterprise widgets",
+        "invisible and session fixtures",
+        "valid proxy for proxy variants",
+        "backend validation and form acceptance"
+      ]
+    },
+    {
+      "task_type": "ReCaptchaV2EnterpriseTask",
+      "category_id": "recaptcha_v2",
+      "proxy_policy": "required",
+      "endpoints": [
+        "createTask",
+        "getTaskResult",
+        "getToken"
+      ],
+      "response_mode": "asynchronous",
+      "documentation_issues": [],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "pageAction": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "const": "ReCaptchaV2EnterpriseTask"
+          },
+          "apiDomain": {
+            "type": "string",
+            "minLength": 1
+          },
+          "isInvisible": {
+            "type": "boolean"
+          },
+          "enterprisePayload": {
+            "type": "object",
+            "properties": {
+              "s": {
+                "type": "string"
+              }
+            }
+          },
+          "websiteKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "isSession": {
+            "type": "boolean"
+          },
+          "cookies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "value"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "value": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "recaptchaDataSValue": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxy": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyType": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "http",
+              "https",
+              "socks4",
+              "socks5"
+            ]
+          },
+          "proxyAddress": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyLogin": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyPassword": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyPort": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 65535
+          }
+        },
+        "required": [
+          "type",
+          "websiteURL",
+          "websiteKey"
+        ],
+        "additionalProperties": true,
+        "allOf": [
+          {
+            "$comment": "proxy fields provided at solver submission",
+            "oneOf": [
+              {
+                "required": [
+                  "proxy"
+                ],
+                "not": {
+                  "required": [
+                    "proxyAddress"
+                  ]
+                }
+              },
+              {
+                "required": [
+                  "proxyType",
+                  "proxyAddress",
+                  "proxyPort"
+                ],
+                "not": {
+                  "required": [
+                    "proxy"
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "gRecaptchaResponse": {},
+          "userAgent": {},
+          "secChUa": {},
+          "createTime": {},
+          "recaptcha-ca-t": {},
+          "recaptcha-ca-e": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "default",
+          "task": {
+            "type": "ReCaptchaV2EnterpriseTask",
+            "websiteURL": "https://example.com/captcha",
+            "websiteKey": "EXAMPLE_SITE_KEY",
+            "proxy": "http:127.0.0.1:8080:example-user:example-password"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/captcha/ReCaptchaV2/",
+      "notes": [
+        "ReCaptchaV2Task appears in official request and getToken docs but is missing from the page type list.",
+        "cookies is documented separately and not universally supported. min_score in the legacy interface has no documented field equivalent here."
+      ],
+      "browser_adapter": "recaptcha",
+      "test_resources": [
+        "real standard and Enterprise widgets",
+        "invisible and session fixtures",
+        "valid proxy for proxy variants",
+        "backend validation and form acceptance"
+      ]
+    },
+    {
+      "task_type": "ReCaptchaV2EnterpriseTaskProxyLess",
+      "category_id": "recaptcha_v2",
+      "proxy_policy": "provider_managed",
+      "endpoints": [
+        "createTask",
+        "getTaskResult",
+        "getToken"
+      ],
+      "response_mode": "asynchronous",
+      "documentation_issues": [],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "pageAction": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "const": "ReCaptchaV2EnterpriseTaskProxyLess"
+          },
+          "apiDomain": {
+            "type": "string",
+            "minLength": 1
+          },
+          "isInvisible": {
+            "type": "boolean"
+          },
+          "enterprisePayload": {
+            "type": "object",
+            "properties": {
+              "s": {
+                "type": "string"
+              }
+            }
+          },
+          "websiteKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "isSession": {
+            "type": "boolean"
+          },
+          "cookies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "value"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "value": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "recaptchaDataSValue": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "type",
+          "websiteURL",
+          "websiteKey"
+        ],
+        "additionalProperties": true
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "gRecaptchaResponse": {},
+          "userAgent": {},
+          "secChUa": {},
+          "createTime": {},
+          "recaptcha-ca-t": {},
+          "recaptcha-ca-e": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "default",
+          "task": {
+            "type": "ReCaptchaV2EnterpriseTaskProxyLess",
+            "websiteURL": "https://example.com/captcha",
+            "websiteKey": "EXAMPLE_SITE_KEY"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/captcha/ReCaptchaV2/",
+      "notes": [
+        "ReCaptchaV2Task appears in official request and getToken docs but is missing from the page type list.",
+        "cookies is documented separately and not universally supported. min_score in the legacy interface has no documented field equivalent here."
+      ],
+      "browser_adapter": "recaptcha",
+      "test_resources": [
+        "real standard and Enterprise widgets",
+        "invisible and session fixtures",
+        "valid proxy for proxy variants",
+        "backend validation and form acceptance"
+      ]
+    },
+    {
+      "task_type": "ReCaptchaV3Task",
+      "category_id": "recaptcha_v3",
+      "proxy_policy": "required",
+      "endpoints": [
+        "createTask",
+        "getTaskResult",
+        "getToken"
+      ],
+      "response_mode": "asynchronous",
+      "documentation_issues": [
+        "V3-EXAMPLE"
+      ],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "pageAction": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "const": "ReCaptchaV3Task"
+          },
+          "apiDomain": {
+            "type": "string",
+            "minLength": 1
+          },
+          "enterprisePayload": {
+            "type": "object",
+            "properties": {
+              "s": {
+                "type": "string"
+              }
+            }
+          },
+          "isSession": {
+            "type": "boolean"
+          },
+          "websiteKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cookies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "value"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "value": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "proxy": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyType": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "http",
+              "https",
+              "socks4",
+              "socks5"
+            ]
+          },
+          "proxyAddress": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyLogin": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyPassword": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyPort": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 65535
+          }
+        },
+        "required": [
+          "type",
+          "websiteURL",
+          "websiteKey"
+        ],
+        "additionalProperties": true,
+        "allOf": [
+          {
+            "$comment": "proxy fields provided at solver submission",
+            "oneOf": [
+              {
+                "required": [
+                  "proxy"
+                ],
+                "not": {
+                  "required": [
+                    "proxyAddress"
+                  ]
+                }
+              },
+              {
+                "required": [
+                  "proxyType",
+                  "proxyAddress",
+                  "proxyPort"
+                ],
+                "not": {
+                  "required": [
+                    "proxy"
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "gRecaptchaResponse": {},
+          "userAgent": {},
+          "secChUa": {},
+          "createTime": {},
+          "recaptcha-ca-t": {},
+          "recaptcha-ca-e": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "default",
+          "task": {
+            "type": "ReCaptchaV3Task",
+            "websiteURL": "https://example.com/captcha",
+            "websiteKey": "EXAMPLE_SITE_KEY",
+            "proxy": "http:127.0.0.1:8080:example-user:example-password"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/captcha/ReCaptchaV3/",
+      "notes": [
+        "pageAction is optional in the API table but should match the actual page action.",
+        "M1 requires provider contact and site adaptation. No automatic upgrade from standard to M1.",
+        "The v3 generic request example incorrectly uses a v2 type; follow the v3 type table."
+      ],
+      "browser_adapter": "recaptcha",
+      "test_resources": [
+        "real v3/Enterprise widgets and actual action",
+        "M1 site adaptation and provider eligibility",
+        "valid proxy for proxy variants",
+        "backend score/action/hostname and business acceptance"
+      ]
+    },
+    {
+      "task_type": "ReCaptchaV3TaskProxyLess",
+      "category_id": "recaptcha_v3",
+      "proxy_policy": "provider_managed",
+      "endpoints": [
+        "createTask",
+        "getTaskResult",
+        "getToken"
+      ],
+      "response_mode": "asynchronous",
+      "documentation_issues": [
+        "V3-EXAMPLE"
+      ],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "pageAction": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "const": "ReCaptchaV3TaskProxyLess"
+          },
+          "apiDomain": {
+            "type": "string",
+            "minLength": 1
+          },
+          "enterprisePayload": {
+            "type": "object",
+            "properties": {
+              "s": {
+                "type": "string"
+              }
+            }
+          },
+          "isSession": {
+            "type": "boolean"
+          },
+          "websiteKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cookies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "value"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "value": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          }
+        },
+        "required": [
+          "type",
+          "websiteURL",
+          "websiteKey"
+        ],
+        "additionalProperties": true
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "gRecaptchaResponse": {},
+          "userAgent": {},
+          "secChUa": {},
+          "createTime": {},
+          "recaptcha-ca-t": {},
+          "recaptcha-ca-e": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "default",
+          "task": {
+            "type": "ReCaptchaV3TaskProxyLess",
+            "websiteURL": "https://example.com/captcha",
+            "websiteKey": "EXAMPLE_SITE_KEY"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/captcha/ReCaptchaV3/",
+      "notes": [
+        "pageAction is optional in the API table but should match the actual page action.",
+        "M1 requires provider contact and site adaptation. No automatic upgrade from standard to M1.",
+        "The v3 generic request example incorrectly uses a v2 type; follow the v3 type table."
+      ],
+      "browser_adapter": "recaptcha",
+      "test_resources": [
+        "real v3/Enterprise widgets and actual action",
+        "M1 site adaptation and provider eligibility",
+        "valid proxy for proxy variants",
+        "backend score/action/hostname and business acceptance"
+      ]
+    },
+    {
+      "task_type": "ReCaptchaV3EnterpriseTask",
+      "category_id": "recaptcha_v3",
+      "proxy_policy": "required",
+      "endpoints": [
+        "createTask",
+        "getTaskResult",
+        "getToken"
+      ],
+      "response_mode": "asynchronous",
+      "documentation_issues": [
+        "V3-EXAMPLE"
+      ],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "pageAction": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "const": "ReCaptchaV3EnterpriseTask"
+          },
+          "apiDomain": {
+            "type": "string",
+            "minLength": 1
+          },
+          "enterprisePayload": {
+            "type": "object",
+            "properties": {
+              "s": {
+                "type": "string"
+              }
+            }
+          },
+          "isSession": {
+            "type": "boolean"
+          },
+          "websiteKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cookies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "value"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "value": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "proxy": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyType": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "http",
+              "https",
+              "socks4",
+              "socks5"
+            ]
+          },
+          "proxyAddress": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyLogin": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyPassword": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyPort": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 65535
+          }
+        },
+        "required": [
+          "type",
+          "websiteURL",
+          "websiteKey"
+        ],
+        "additionalProperties": true,
+        "allOf": [
+          {
+            "$comment": "proxy fields provided at solver submission",
+            "oneOf": [
+              {
+                "required": [
+                  "proxy"
+                ],
+                "not": {
+                  "required": [
+                    "proxyAddress"
+                  ]
+                }
+              },
+              {
+                "required": [
+                  "proxyType",
+                  "proxyAddress",
+                  "proxyPort"
+                ],
+                "not": {
+                  "required": [
+                    "proxy"
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "gRecaptchaResponse": {},
+          "userAgent": {},
+          "secChUa": {},
+          "createTime": {},
+          "recaptcha-ca-t": {},
+          "recaptcha-ca-e": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "default",
+          "task": {
+            "type": "ReCaptchaV3EnterpriseTask",
+            "websiteURL": "https://example.com/captcha",
+            "websiteKey": "EXAMPLE_SITE_KEY",
+            "proxy": "http:127.0.0.1:8080:example-user:example-password"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/captcha/ReCaptchaV3/",
+      "notes": [
+        "pageAction is optional in the API table but should match the actual page action.",
+        "M1 requires provider contact and site adaptation. No automatic upgrade from standard to M1.",
+        "The v3 generic request example incorrectly uses a v2 type; follow the v3 type table."
+      ],
+      "browser_adapter": "recaptcha",
+      "test_resources": [
+        "real v3/Enterprise widgets and actual action",
+        "M1 site adaptation and provider eligibility",
+        "valid proxy for proxy variants",
+        "backend score/action/hostname and business acceptance"
+      ]
+    },
+    {
+      "task_type": "ReCaptchaV3EnterpriseTaskProxyLess",
+      "category_id": "recaptcha_v3",
+      "proxy_policy": "provider_managed",
+      "endpoints": [
+        "createTask",
+        "getTaskResult",
+        "getToken"
+      ],
+      "response_mode": "asynchronous",
+      "documentation_issues": [
+        "V3-EXAMPLE"
+      ],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "pageAction": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "const": "ReCaptchaV3EnterpriseTaskProxyLess"
+          },
+          "apiDomain": {
+            "type": "string",
+            "minLength": 1
+          },
+          "enterprisePayload": {
+            "type": "object",
+            "properties": {
+              "s": {
+                "type": "string"
+              }
+            }
+          },
+          "isSession": {
+            "type": "boolean"
+          },
+          "websiteKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cookies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "value"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "value": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          }
+        },
+        "required": [
+          "type",
+          "websiteURL",
+          "websiteKey"
+        ],
+        "additionalProperties": true
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "gRecaptchaResponse": {},
+          "userAgent": {},
+          "secChUa": {},
+          "createTime": {},
+          "recaptcha-ca-t": {},
+          "recaptcha-ca-e": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "default",
+          "task": {
+            "type": "ReCaptchaV3EnterpriseTaskProxyLess",
+            "websiteURL": "https://example.com/captcha",
+            "websiteKey": "EXAMPLE_SITE_KEY"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/captcha/ReCaptchaV3/",
+      "notes": [
+        "pageAction is optional in the API table but should match the actual page action.",
+        "M1 requires provider contact and site adaptation. No automatic upgrade from standard to M1.",
+        "The v3 generic request example incorrectly uses a v2 type; follow the v3 type table."
+      ],
+      "browser_adapter": "recaptcha",
+      "test_resources": [
+        "real v3/Enterprise widgets and actual action",
+        "M1 site adaptation and provider eligibility",
+        "valid proxy for proxy variants",
+        "backend score/action/hostname and business acceptance"
+      ]
+    },
+    {
+      "task_type": "ReCaptchaV3M1Task",
+      "category_id": "recaptcha_v3",
+      "proxy_policy": "required",
+      "endpoints": [
+        "createTask",
+        "getTaskResult"
+      ],
+      "response_mode": "asynchronous",
+      "documentation_issues": [
+        "V3-EXAMPLE",
+        "M1-ELIGIBILITY"
+      ],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "pageAction": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "const": "ReCaptchaV3M1Task"
+          },
+          "apiDomain": {
+            "type": "string",
+            "minLength": 1
+          },
+          "enterprisePayload": {
+            "type": "object",
+            "properties": {
+              "s": {
+                "type": "string"
+              }
+            }
+          },
+          "isSession": {
+            "type": "boolean"
+          },
+          "websiteKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cookies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "value"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "value": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "proxy": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyType": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "http",
+              "https",
+              "socks4",
+              "socks5"
+            ]
+          },
+          "proxyAddress": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyLogin": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyPassword": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyPort": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 65535
+          }
+        },
+        "required": [
+          "type",
+          "websiteURL",
+          "websiteKey"
+        ],
+        "additionalProperties": true,
+        "allOf": [
+          {
+            "$comment": "proxy fields provided at solver submission",
+            "oneOf": [
+              {
+                "required": [
+                  "proxy"
+                ],
+                "not": {
+                  "required": [
+                    "proxyAddress"
+                  ]
+                }
+              },
+              {
+                "required": [
+                  "proxyType",
+                  "proxyAddress",
+                  "proxyPort"
+                ],
+                "not": {
+                  "required": [
+                    "proxy"
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "gRecaptchaResponse": {},
+          "userAgent": {},
+          "secChUa": {},
+          "createTime": {},
+          "recaptcha-ca-t": {},
+          "recaptcha-ca-e": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "default",
+          "task": {
+            "type": "ReCaptchaV3M1Task",
+            "websiteURL": "https://example.com/captcha",
+            "websiteKey": "EXAMPLE_SITE_KEY",
+            "proxy": "http:127.0.0.1:8080:example-user:example-password"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/captcha/ReCaptchaV3/",
+      "notes": [
+        "pageAction is optional in the API table but should match the actual page action.",
+        "M1 requires provider contact and site adaptation. No automatic upgrade from standard to M1.",
+        "The v3 generic request example incorrectly uses a v2 type; follow the v3 type table."
+      ],
+      "browser_adapter": "recaptcha",
+      "test_resources": [
+        "real v3/Enterprise widgets and actual action",
+        "M1 site adaptation and provider eligibility",
+        "valid proxy for proxy variants",
+        "backend score/action/hostname and business acceptance"
+      ]
+    },
+    {
+      "task_type": "ReCaptchaV3M1TaskProxyLess",
+      "category_id": "recaptcha_v3",
+      "proxy_policy": "provider_managed",
+      "endpoints": [
+        "createTask",
+        "getTaskResult"
+      ],
+      "response_mode": "asynchronous",
+      "documentation_issues": [
+        "V3-EXAMPLE",
+        "M1-ELIGIBILITY"
+      ],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "pageAction": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "const": "ReCaptchaV3M1TaskProxyLess"
+          },
+          "apiDomain": {
+            "type": "string",
+            "minLength": 1
+          },
+          "enterprisePayload": {
+            "type": "object",
+            "properties": {
+              "s": {
+                "type": "string"
+              }
+            }
+          },
+          "isSession": {
+            "type": "boolean"
+          },
+          "websiteKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cookies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "value"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "value": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          }
+        },
+        "required": [
+          "type",
+          "websiteURL",
+          "websiteKey"
+        ],
+        "additionalProperties": true
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "gRecaptchaResponse": {},
+          "userAgent": {},
+          "secChUa": {},
+          "createTime": {},
+          "recaptcha-ca-t": {},
+          "recaptcha-ca-e": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "default",
+          "task": {
+            "type": "ReCaptchaV3M1TaskProxyLess",
+            "websiteURL": "https://example.com/captcha",
+            "websiteKey": "EXAMPLE_SITE_KEY"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/captcha/ReCaptchaV3/",
+      "notes": [
+        "pageAction is optional in the API table but should match the actual page action.",
+        "M1 requires provider contact and site adaptation. No automatic upgrade from standard to M1.",
+        "The v3 generic request example incorrectly uses a v2 type; follow the v3 type table."
+      ],
+      "browser_adapter": "recaptcha",
+      "test_resources": [
+        "real v3/Enterprise widgets and actual action",
+        "M1 site adaptation and provider eligibility",
+        "valid proxy for proxy variants",
+        "backend score/action/hostname and business acceptance"
+      ]
+    },
+    {
+      "task_type": "ReCaptchaV3EnterpriseM1Task",
+      "category_id": "recaptcha_v3",
+      "proxy_policy": "required",
+      "endpoints": [
+        "createTask",
+        "getTaskResult"
+      ],
+      "response_mode": "asynchronous",
+      "documentation_issues": [
+        "V3-EXAMPLE",
+        "M1-ELIGIBILITY"
+      ],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "pageAction": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "const": "ReCaptchaV3EnterpriseM1Task"
+          },
+          "apiDomain": {
+            "type": "string",
+            "minLength": 1
+          },
+          "enterprisePayload": {
+            "type": "object",
+            "properties": {
+              "s": {
+                "type": "string"
+              }
+            }
+          },
+          "isSession": {
+            "type": "boolean"
+          },
+          "websiteKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cookies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "value"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "value": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "proxy": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyType": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "http",
+              "https",
+              "socks4",
+              "socks5"
+            ]
+          },
+          "proxyAddress": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyLogin": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyPassword": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyPort": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 65535
+          }
+        },
+        "required": [
+          "type",
+          "websiteURL",
+          "websiteKey"
+        ],
+        "additionalProperties": true,
+        "allOf": [
+          {
+            "$comment": "proxy fields provided at solver submission",
+            "oneOf": [
+              {
+                "required": [
+                  "proxy"
+                ],
+                "not": {
+                  "required": [
+                    "proxyAddress"
+                  ]
+                }
+              },
+              {
+                "required": [
+                  "proxyType",
+                  "proxyAddress",
+                  "proxyPort"
+                ],
+                "not": {
+                  "required": [
+                    "proxy"
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "gRecaptchaResponse": {},
+          "userAgent": {},
+          "secChUa": {},
+          "createTime": {},
+          "recaptcha-ca-t": {},
+          "recaptcha-ca-e": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "default",
+          "task": {
+            "type": "ReCaptchaV3EnterpriseM1Task",
+            "websiteURL": "https://example.com/captcha",
+            "websiteKey": "EXAMPLE_SITE_KEY",
+            "proxy": "http:127.0.0.1:8080:example-user:example-password"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/captcha/ReCaptchaV3/",
+      "notes": [
+        "pageAction is optional in the API table but should match the actual page action.",
+        "M1 requires provider contact and site adaptation. No automatic upgrade from standard to M1.",
+        "The v3 generic request example incorrectly uses a v2 type; follow the v3 type table."
+      ],
+      "browser_adapter": "recaptcha",
+      "test_resources": [
+        "real v3/Enterprise widgets and actual action",
+        "M1 site adaptation and provider eligibility",
+        "valid proxy for proxy variants",
+        "backend score/action/hostname and business acceptance"
+      ]
+    },
+    {
+      "task_type": "ReCaptchaV3EnterpriseM1TaskProxyLess",
+      "category_id": "recaptcha_v3",
+      "proxy_policy": "provider_managed",
+      "endpoints": [
+        "createTask",
+        "getTaskResult"
+      ],
+      "response_mode": "asynchronous",
+      "documentation_issues": [
+        "V3-EXAMPLE",
+        "M1-ELIGIBILITY"
+      ],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "pageAction": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "const": "ReCaptchaV3EnterpriseM1TaskProxyLess"
+          },
+          "apiDomain": {
+            "type": "string",
+            "minLength": 1
+          },
+          "enterprisePayload": {
+            "type": "object",
+            "properties": {
+              "s": {
+                "type": "string"
+              }
+            }
+          },
+          "isSession": {
+            "type": "boolean"
+          },
+          "websiteKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cookies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "value"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "value": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          }
+        },
+        "required": [
+          "type",
+          "websiteURL",
+          "websiteKey"
+        ],
+        "additionalProperties": true
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "gRecaptchaResponse": {},
+          "userAgent": {},
+          "secChUa": {},
+          "createTime": {},
+          "recaptcha-ca-t": {},
+          "recaptcha-ca-e": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "default",
+          "task": {
+            "type": "ReCaptchaV3EnterpriseM1TaskProxyLess",
+            "websiteURL": "https://example.com/captcha",
+            "websiteKey": "EXAMPLE_SITE_KEY"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/captcha/ReCaptchaV3/",
+      "notes": [
+        "pageAction is optional in the API table but should match the actual page action.",
+        "M1 requires provider contact and site adaptation. No automatic upgrade from standard to M1.",
+        "The v3 generic request example incorrectly uses a v2 type; follow the v3 type table."
+      ],
+      "browser_adapter": "recaptcha",
+      "test_resources": [
+        "real v3/Enterprise widgets and actual action",
+        "M1 site adaptation and provider eligibility",
+        "valid proxy for proxy variants",
+        "backend score/action/hostname and business acceptance"
+      ]
+    },
+    {
+      "task_type": "MtCaptchaTask",
+      "category_id": "mtcaptcha",
+      "proxy_policy": "required",
+      "endpoints": [
+        "createTask",
+        "getTaskResult"
+      ],
+      "response_mode": "asynchronous",
+      "documentation_issues": [],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "proxy": {
+            "type": "string",
+            "minLength": 1
+          },
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "websiteKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "const": "MtCaptchaTask"
+          },
+          "proxyType": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "http",
+              "https",
+              "socks4",
+              "socks5"
+            ]
+          },
+          "proxyAddress": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyLogin": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyPassword": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyPort": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 65535
+          }
+        },
+        "required": [
+          "type",
+          "websiteURL",
+          "websiteKey"
+        ],
+        "additionalProperties": true,
+        "allOf": [
+          {
+            "$comment": "proxy fields provided at solver submission",
+            "oneOf": [
+              {
+                "required": [
+                  "proxy"
+                ],
+                "not": {
+                  "required": [
+                    "proxyAddress"
+                  ]
+                }
+              },
+              {
+                "required": [
+                  "proxyType",
+                  "proxyAddress",
+                  "proxyPort"
+                ],
+                "not": {
+                  "required": [
+                    "proxy"
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "token": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "default",
+          "task": {
+            "type": "MtCaptchaTask",
+            "websiteURL": "https://example.com/captcha",
+            "websiteKey": "EXAMPLE_SITE_KEY",
+            "proxy": "http:127.0.0.1:8080:example-user:example-password"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/captcha/MtCaptcha/",
+      "notes": [
+        "Proxy is conditionally required by variant despite being optional in the generic parameter table."
+      ],
+      "browser_adapter": "mtcaptcha",
+      "test_resources": [
+        "real MTCaptcha site key",
+        "valid proxy for proxy variant",
+        "controlled token submission and backend result"
+      ]
+    },
+    {
+      "task_type": "MtCaptchaTaskProxyLess",
+      "category_id": "mtcaptcha",
+      "proxy_policy": "provider_managed",
+      "endpoints": [
+        "createTask",
+        "getTaskResult"
+      ],
+      "response_mode": "asynchronous",
+      "documentation_issues": [],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "websiteKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "const": "MtCaptchaTaskProxyLess"
+          }
+        },
+        "required": [
+          "type",
+          "websiteURL",
+          "websiteKey"
+        ],
+        "additionalProperties": true
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "token": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "default",
+          "task": {
+            "type": "MtCaptchaTaskProxyLess",
+            "websiteURL": "https://example.com/captcha",
+            "websiteKey": "EXAMPLE_SITE_KEY"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/captcha/MtCaptcha/",
+      "notes": [
+        "Proxy is conditionally required by variant despite being optional in the generic parameter table."
+      ],
+      "browser_adapter": "mtcaptcha",
+      "test_resources": [
+        "real MTCaptcha site key",
+        "valid proxy for proxy variant",
+        "controlled token submission and backend result"
+      ]
+    },
+    {
+      "task_type": "DatadomeSliderTask",
+      "category_id": "datadome",
+      "proxy_policy": "required",
+      "endpoints": [
+        "createTask",
+        "getTaskResult"
+      ],
+      "response_mode": "asynchronous",
+      "documentation_issues": [
+        "DATADOME-CASING"
+      ],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "captchaUrl": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "type": {
+            "const": "DatadomeSliderTask"
+          },
+          "userAgent": {
+            "type": "string",
+            "minLength": 1
+          },
+          "html": {
+            "type": "string",
+            "minLength": 1
+          },
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "proxy": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyType": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "http",
+              "https",
+              "socks4",
+              "socks5"
+            ]
+          },
+          "proxyAddress": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyLogin": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyPassword": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyPort": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 65535
+          }
+        },
+        "required": [
+          "type",
+          "captchaUrl",
+          "userAgent"
+        ],
+        "additionalProperties": true,
+        "allOf": [
+          {
+            "$comment": "proxy fields provided at solver submission",
+            "oneOf": [
+              {
+                "required": [
+                  "proxy"
+                ],
+                "not": {
+                  "required": [
+                    "proxyAddress"
+                  ]
+                }
+              },
+              {
+                "required": [
+                  "proxyType",
+                  "proxyAddress",
+                  "proxyPort"
+                ],
+                "not": {
+                  "required": [
+                    "proxy"
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "cookie": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "slider",
+          "task": {
+            "type": "DatadomeSliderTask",
+            "captchaUrl": "https://example.com/captcha?t=fe",
+            "userAgent": "PROVIDER_SUPPORTED_UA_REQUIRED",
+            "websiteURL": "https://example.com/captcha",
+            "proxy": "http:127.0.0.1:8080:example-user:example-password"
+          },
+          "purpose": "template_not_a_live_fixture"
+        },
+        {
+          "variant": "interstitial",
+          "task": {
+            "type": "DatadomeSliderTask",
+            "captchaUrl": "https://example.com/captcha?t=fe",
+            "userAgent": "PROVIDER_SUPPORTED_UA_REQUIRED",
+            "websiteURL": "https://example.com/captcha",
+            "proxy": "http:127.0.0.1:8080:example-user:example-password"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/captcha/datadome/",
+      "notes": [
+        "websiteURL appears in SDK examples but not the parameter table; do not make it universally required.",
+        "Reject stale or blocked challenge inputs; do not promise that an arbitrary UA override matches the required browser fingerprint."
+      ],
+      "browser_adapter": "datadome",
+      "test_resources": [
+        "fresh slider and interstitial challenge URLs",
+        "static/sticky proxy",
+        "provider-supported browser UA and matching browser environment",
+        "protected test endpoint"
+      ]
+    },
+    {
+      "task_type": "AntiAwsWafTask",
+      "category_id": "aws_token",
+      "proxy_policy": "required",
+      "endpoints": [
+        "createTask",
+        "getTaskResult"
+      ],
+      "response_mode": "asynchronous",
+      "documentation_issues": [],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "awsContext": {
+            "type": "string",
+            "minLength": 1
+          },
+          "awsExistingToken": {
+            "type": "string",
+            "minLength": 1
+          },
+          "awsChallengeJS": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "type": {
+            "const": "AntiAwsWafTask"
+          },
+          "awsApiKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "awsIv": {
+            "type": "string",
+            "minLength": 1
+          },
+          "awsKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "awsApiJs": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "proxy": {
+            "type": "string",
+            "minLength": 1
+          },
+          "awsProblemUrl": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "proxyType": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "http",
+              "https",
+              "socks4",
+              "socks5"
+            ]
+          },
+          "proxyAddress": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyLogin": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyPassword": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyPort": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 65535
+          }
+        },
+        "required": [
+          "type",
+          "websiteURL"
+        ],
+        "additionalProperties": true,
+        "allOf": [
+          {
+            "$comment": "proxy fields provided at solver submission",
+            "oneOf": [
+              {
+                "required": [
+                  "proxy"
+                ],
+                "not": {
+                  "required": [
+                    "proxyAddress"
+                  ]
+                }
+              },
+              {
+                "required": [
+                  "proxyType",
+                  "proxyAddress",
+                  "proxyPort"
+                ],
+                "not": {
+                  "required": [
+                    "proxy"
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "cookie": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "default",
+          "task": {
+            "type": "AntiAwsWafTask",
+            "websiteURL": "https://example.com/captcha",
+            "proxy": "http:127.0.0.1:8080:example-user:example-password"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/captcha/awsWaf/",
+      "notes": [
+        "Support documented URL-only, key/iv/context+challenge.js, challenge.js-only, jsapi.js, problem URL and secondary verification recipes.",
+        "Do not turn every optional parameter into one universally required tuple."
+      ],
+      "browser_adapter": "aws_token",
+      "test_resources": [
+        "fresh matching key/iv/context and scripts or documented alternative parameter set",
+        "secondary challenge fixtures",
+        "proxy for proxy variant",
+        "backend acceptance of aws-waf-token"
+      ]
+    },
+    {
+      "task_type": "AntiAwsWafTaskProxyLess",
+      "category_id": "aws_token",
+      "proxy_policy": "provider_managed",
+      "endpoints": [
+        "createTask",
+        "getTaskResult"
+      ],
+      "response_mode": "asynchronous",
+      "documentation_issues": [],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "awsContext": {
+            "type": "string",
+            "minLength": 1
+          },
+          "awsExistingToken": {
+            "type": "string",
+            "minLength": 1
+          },
+          "awsChallengeJS": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "type": {
+            "const": "AntiAwsWafTaskProxyLess"
+          },
+          "awsApiKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "awsIv": {
+            "type": "string",
+            "minLength": 1
+          },
+          "awsKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "awsApiJs": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "awsProblemUrl": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          }
+        },
+        "required": [
+          "type",
+          "websiteURL"
+        ],
+        "additionalProperties": true
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "cookie": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "default",
+          "task": {
+            "type": "AntiAwsWafTaskProxyLess",
+            "websiteURL": "https://example.com/captcha"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/captcha/awsWaf/",
+      "notes": [
+        "Support documented URL-only, key/iv/context+challenge.js, challenge.js-only, jsapi.js, problem URL and secondary verification recipes.",
+        "Do not turn every optional parameter into one universally required tuple."
+      ],
+      "browser_adapter": "aws_token",
+      "test_resources": [
+        "fresh matching key/iv/context and scripts or documented alternative parameter set",
+        "secondary challenge fixtures",
+        "proxy for proxy variant",
+        "backend acceptance of aws-waf-token"
+      ]
+    },
+    {
+      "task_type": "AntiTurnstileTaskProxyLess",
+      "category_id": "turnstile",
+      "proxy_policy": "provider_managed",
+      "endpoints": [
+        "createTask",
+        "getTaskResult"
+      ],
+      "response_mode": "asynchronous",
+      "documentation_issues": [],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string"
+              },
+              "cdata": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": true
+          },
+          "websiteKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "const": "AntiTurnstileTaskProxyLess"
+          }
+        },
+        "required": [
+          "type",
+          "websiteURL",
+          "websiteKey"
+        ],
+        "additionalProperties": true
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "token": {},
+          "type": {},
+          "userAgent": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "default",
+          "task": {
+            "type": "AntiTurnstileTaskProxyLess",
+            "websiteURL": "https://example.com/captcha",
+            "websiteKey": "EXAMPLE_SITE_KEY"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/captcha/cloudflare_turnstile/",
+      "notes": [
+        "Managed, non-interactive and invisible are widget modes of the same type.",
+        "Docs say custom userAgent is ignored; proxy is not required. Do not force browser proxy or UA fields into this task. Dummy widget keys are only offline/integration fixtures."
+      ],
+      "browser_adapter": "turnstile",
+      "test_resources": [
+        "real Turnstile widget",
+        "real backend secret and controlled validation endpoint",
+        "action/cdata fixtures",
+        "same-page form state assertions"
+      ]
+    },
+    {
+      "task_type": "AntiCloudflareTask",
+      "category_id": "cloudflare_challenge",
+      "proxy_policy": "required_sticky",
+      "endpoints": [
+        "createTask",
+        "getTaskResult"
+      ],
+      "response_mode": "asynchronous",
+      "documentation_issues": [],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "type": {
+            "const": "AntiCloudflareTask"
+          },
+          "userAgent": {
+            "type": "string",
+            "minLength": 1
+          },
+          "html": {
+            "type": "string",
+            "minLength": 1
+          },
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "proxy": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyType": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "http",
+              "https",
+              "socks4",
+              "socks5"
+            ]
+          },
+          "proxyAddress": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyLogin": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyPassword": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proxyPort": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 65535
+          }
+        },
+        "required": [
+          "type",
+          "websiteURL"
+        ],
+        "additionalProperties": true,
+        "allOf": [
+          {
+            "$comment": "proxy fields provided at solver submission",
+            "oneOf": [
+              {
+                "required": [
+                  "proxy"
+                ],
+                "not": {
+                  "required": [
+                    "proxyAddress"
+                  ]
+                }
+              },
+              {
+                "required": [
+                  "proxyType",
+                  "proxyAddress",
+                  "proxyPort"
+                ],
+                "not": {
+                  "required": [
+                    "proxy"
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "cookies": {},
+          "token": {},
+          "userAgent": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "default",
+          "task": {
+            "type": "AntiCloudflareTask",
+            "websiteURL": "https://example.com/captcha",
+            "proxy": "http:127.0.0.1:8080:example-user:example-password"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/captcha/cloudflare_challenge/",
+      "notes": [
+        "Keep proxy and browser environment consistent; apply cf_clearance in the original context and verify protected resource access."
+      ],
+      "browser_adapter": "cloudflare_challenge",
+      "test_resources": [
+        "static/sticky proxy session lasting at least three minutes",
+        "supported Chromium environment",
+        "fresh challenge HTML when needed",
+        "protected test endpoint"
+      ]
+    },
+    {
+      "task_type": "AntiBotdeflectorTaskProxyLess",
+      "category_id": "botdeflector",
+      "proxy_policy": "provider_managed",
+      "endpoints": [
+        "createTask",
+        "getTaskResult"
+      ],
+      "response_mode": "asynchronous",
+      "documentation_issues": [],
+      "documentation_status": "reviewed",
+      "implementation_status": "catalog_and_validation",
+      "live_verification": "pending",
+      "browser_verification": "pending",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "type": {
+            "const": "AntiBotdeflectorTaskProxyLess"
+          },
+          "websiteURL": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^https?://"
+          },
+          "flowToken": {
+            "type": "string",
+            "minLength": 1
+          },
+          "domain": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "type",
+          "websiteURL",
+          "domain",
+          "flowToken"
+        ],
+        "additionalProperties": true
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "token": {}
+        },
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "variant": "default",
+          "task": {
+            "type": "AntiBotdeflectorTaskProxyLess",
+            "websiteURL": "https://example.com/captcha",
+            "domain": "challenge.example.com",
+            "flowToken": "FRESH_FLOW_TOKEN_REQUIRED"
+          },
+          "purpose": "template_not_a_live_fixture"
+        }
+      ],
+      "source_url": "https://docs.capsolver.com/en/guide/captcha/botdeflector/",
+      "notes": [
+        "domain is the challenge-service domain and can differ from websiteURL."
+      ],
+      "browser_adapter": "botdeflector",
+      "test_resources": [
+        "fresh flowToken and challenge endpoint domain",
+        "controlled token application flow",
+        "backend acceptance condition"
+      ]
+    }
+  ]
+}

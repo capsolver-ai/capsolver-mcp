@@ -1,5 +1,3 @@
-# Core dependencies for capsolver-mcp
-# Mirrors [project.dependencies] in pyproject.toml.
-# Source of truth: pyproject.toml — regenerate if constraints change.
-capsolver-core>=0.1.0
-mcp>=1.0.0,<2
+mcp>=1.30,<2
+httpx>=0.27,<1
+jsonschema>=4.20,<5

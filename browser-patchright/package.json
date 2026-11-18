@@ -1,0 +1,57 @@
+{
+  "name": "capsolver-patchright-mcp",
+  "version": "0.2.0",
+  "description": "CapSolver browser MCP based directly on mcp-patchright with optional same-tab workflow tools.",
+  "type": "module",
+  "main": "dist/index.js",
+  "exports": {
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "capsolver-patchright-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist/",
+    "LICENSE",
+    "NOTICE.txt",
+    "package.json",
+    "npm-shrinkwrap.json"
+  ],
+  "keywords": [
+    "patchright",
+    "mcp",
+    "stealth",
+    "browser",
+    "playwright",
+    "automation",
+    "antidetect",
+    "model-context-protocol",
+    "main-world"
+  ],
+  "contributors": [
+    "maestrojeong (upstream mcp-patchright, https://github.com/maestrojeong/mcp-patchright)"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "express": "^5.1.0",
+    "patchright": "1.61.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.3",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.9.1",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3"
+  },
+  "scripts": {
+    "build": "tsc && node -e \"try{require('fs').chmodSync('dist/index.js',0o755)}catch(e){}\"",
+    "dev": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome lint src",
+    "lint:fix": "biome lint --write src",
+    "prepublishOnly": "npm run build"
+  },
+  "private": true
+}

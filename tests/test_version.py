@@ -37,7 +37,8 @@ def test_server_json_package_version_matches_package(server_json: dict, package_
     assert server_json["packages"][0]["version"] == package_version
 
 
-def test_server_json_name_matches_readme_marker(server_json: dict) -> None:
+@pytest.mark.parametrize("path", ["README.md", "docs/pypi.md"])
+def test_server_json_name_matches_readme_marker(server_json: dict, path: str) -> None:
     """The registry validates package ownership via this marker in the PyPI description."""
-    readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    readme = (REPO_ROOT / path).read_text(encoding="utf-8")
     assert f"mcp-name: {server_json['name']}" in readme

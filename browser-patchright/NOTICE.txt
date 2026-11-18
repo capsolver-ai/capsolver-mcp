@@ -1,0 +1,10 @@
+This browser MCP is based on maestrojeong/mcp-patchright, commit
+9f9052288c8c8ed5ddaf8ad133623e8d49da3c56 (version 0.1.11), under the MIT license.
+Source: https://github.com/maestrojeong/mcp-patchright
+The original LICENSE is retained in this directory.
+
+Local adaptations provide the CapSolver workflow bridge, additional tools,
+main-world and iframe execution, session isolation and lifecycle handling.
+Earlier versions derived from the MIT-licensed CapMonster fork at commit
+9949035c448598a599a4deff291b8656c73a23b3; its interfaces informed that work.
+No CapMonster API, credential or runtime dependency is used.

@@ -1,9 +1,19 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+## [0.2.0]
 
-This project follows semantic versioning where practical. Public releases are
-tagged in Git as `vX.Y.Z` and published to PyPI with the same version.
+- Split solving and browser operations into independent MCP services. The core
+  offers 15 tools for schemas, documentation, provider calls, and recovery.
+- Add the optional Python browser service with 13 tools. The Patchright
+  companion offers 66 native tools, or 79 with the same-tab workflow enabled.
+- Keep `CAPSOLVER_API_KEY` as the API key setting for upgrading clients.
+- Add a keyless offline mode, synchronous reCAPTCHA token requests, task
+  polling, and request status. An unknown submission is not retried automatically.
+- Keep browser preparation, result application, and website acceptance
+  separately observable. Support original response capture and browser context
+  HTTP requests.
+- Remove the legacy integrated browser tools and the `capsolver-core` runtime
+  dependency. See the [upgrade guide](docs/migration.md) for replacements.
 
 ## [0.1.3] - 2026-09-18
 
