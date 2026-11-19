@@ -48,7 +48,7 @@ dev = [
 Homepage = "https://capsolver.com"
 Repository = "https://github.com/capsolver-ai/capsolver-mcp"
 Issues = "https://github.com/capsolver-ai/capsolver-mcp/issues"
-Documentation = "https://github.com/capsolver-ai/capsolver-mcp/blob/main/README.md"
+Documentation = "https://github.com/capsolver-ai/capsolver-mcp#readme"
 
 [project.scripts]
 capsolver-mcp = "capsolver_mcp.__main__:main"
