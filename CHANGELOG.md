@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.2.0]
+## [0.2.0] - 2026-11-18
 
 - Split solving and browser operations into independent MCP services. The core
   offers 15 tools for schemas, documentation, provider calls, and recovery.
