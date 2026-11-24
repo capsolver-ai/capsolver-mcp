@@ -18,6 +18,7 @@ Connect an MCP client to CapSolver for CAPTCHA solving and image recognition. Ad
 - [Upgrade from 0.1.x](#upgrade-from-01x)
 - [Troubleshooting](#troubleshooting)
 - [Frequently asked questions](#frequently-asked-questions)
+- [Codex Desktop demo](#codex-desktop-demo)
 
 ## Install with one prompt
 
@@ -271,7 +272,13 @@ Start with
 `list_task_types`. Read the selected task's fields and proxy policy with
 `get_task_schema`.
 
+## Codex Desktop demo
+
+**1. Submit a task.** A prompt in Codex Desktop starts the local demo, and the CapSolver MCP tool calls prepare the image challenge and request a classification.
+
 ![Codex Desktop prompt and CapSolver MCP tool calls](docs/assets/prompt-to-capsolver-tools.gif)
+
+**2. Verify the result.** The browser demo shows a failed attempt before any images are selected. After applying the classification result, the page confirms verification and Codex reports the workshop details.
 
 ![Browser verification and task completion in Codex Desktop](docs/assets/verification-to-task-complete.gif)
 
