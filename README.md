@@ -6,10 +6,6 @@ Connect an MCP client to CapSolver for CAPTCHA solving and image recognition. Ad
 
 [Installation](docs/mcp-integration.md) · [Coverage](docs/coverage.md) · [Upgrade guide](docs/migration.md) · [Troubleshooting](docs/troubleshooting.md) · [Support](SUPPORT.md)
 
-![Codex Desktop prompt and CapSolver MCP tool calls](docs/assets/prompt-to-capsolver-tools.gif)
-
-![Browser verification and task completion in Codex Desktop](docs/assets/verification-to-task-complete.gif)
-
 ## Contents
 
 - [Install with one prompt](#install-with-one-prompt)
@@ -274,6 +270,10 @@ Yes. Connect and list tools without a key. For a simulated balance check, explic
 Start with
 `list_task_types`. Read the selected task's fields and proxy policy with
 `get_task_schema`.
+
+![Codex Desktop prompt and CapSolver MCP tool calls](docs/assets/prompt-to-capsolver-tools.gif)
+
+![Browser verification and task completion in Codex Desktop](docs/assets/verification-to-task-complete.gif)
 
 ---
 
