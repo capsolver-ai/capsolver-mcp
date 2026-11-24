@@ -4,12 +4,36 @@
 
 Connect an MCP client to CapSolver for CAPTCHA solving and image recognition. Add a browser service to read a challenge from a page, apply the solution in the same tab, and check the website's response.
 
+[Installation](docs/mcp-integration.md) · [Coverage](docs/coverage.md) · [Upgrade guide](docs/migration.md) · [Troubleshooting](docs/troubleshooting.md) · [Support](SUPPORT.md)
+
+![Codex Desktop prompt and CapSolver MCP tool calls](docs/assets/prompt-to-capsolver-tools.gif)
+
+![Browser verification and task completion in Codex Desktop](docs/assets/verification-to-task-complete.gif)
+
+## Contents
+
+- [Install with one prompt](#install-with-one-prompt)
+- [Manual setup](#manual-setup)
+- [First call](#first-call)
+- [Usage examples](#usage-examples)
+- [Browser modules](#browser-modules)
+- [Supported MCP tools](#supported-mcp-tools)
+- [Coverage](#coverage)
+- [Upgrade from 0.1.x](#upgrade-from-01x)
+- [Troubleshooting](#troubleshooting)
+- [Frequently asked questions](#frequently-asked-questions)
+
 ## Install with one prompt
 
 Copy this prompt into a coding agent with access to your local terminal.
 
 ~~~text
-Install the latest release of capsolver-mcp from PyPI and connect it to my MCP client over STDIO. Read CAPSOLVER_API_KEY from the core server process environment. Use env.CAPSOLVER_API_KEY in my local MCP client settings to pass it to the process, then call get_account_balance to verify the live connection. Confirm execution_mode: provider. If the key is missing, ask me to configure it locally before the live check. Run with --offline only if I explicitly request a simulation.
+Install the latest release of capsolver-mcp from PyPI and connect it to my MCP client over STDIO.
+Read CAPSOLVER_API_KEY from the core server process environment.
+Use env.CAPSOLVER_API_KEY in my local MCP client settings to pass it to the process, then call get_account_balance to verify the live connection.
+Confirm execution_mode: provider.
+If the key is missing, ask me to configure it locally before the live check.
+Run with --offline only if I explicitly request a simulation.
 ~~~
 
 For a live balance check, set `env.CAPSOLVER_API_KEY` in your local MCP client configuration. The client passes it to the core MCP process as the `CAPSOLVER_API_KEY` environment variable when it starts.
@@ -18,7 +42,9 @@ For a live balance check, set `env.CAPSOLVER_API_KEY` in your local MCP client c
 
 ### Installation
 
-Install Python 3.10 or later and open a terminal in the folder where you want to create the virtual environment. Check `python3 --version` on macOS or Linux, or `py -3 --version` on Windows. If the command reports an older version, use the command for your newer installation to create `.venv` (for example, `python3.12` or `py -3.12`). The commands below install the latest release from PyPI.
+Install Python 3.10 or later and open a terminal in the folder where you want to create the virtual environment.
+
+Check `python3 --version` on macOS or Linux, or `py -3 --version` on Windows. If the command reports an older version, use the command for your newer installation to create `.venv` (for example, `python3.12` or `py -3.12`). The commands below install the latest release from PyPI.
 
 **macOS / Linux**
 
@@ -65,17 +91,29 @@ codex mcp add capsolver-mcp \
   -- "$PWD/.venv/bin/python" -m capsolver_mcp
 ```
 
-### First call
+## First call
 
-Reconnect the client and check for 15 core tools. Call `get_account_balance`. A successful live response includes `ok: true`, `execution_mode: provider`, and a numeric `account.balance`. The core sends the configured API key to CapSolver as `clientKey`. Without a key, the client can still list tools. Live calls report `Configure CAPSOLVER_API_KEY first.`. For an explicit simulation, start the core with `--offline` and expect `execution_mode: offline_simulated` and a simulated balance.
+### Check the connection
+
+Reconnect the client and check for 15 core tools.
+
+Call `get_account_balance`. A successful live response includes `ok: true`, `execution_mode: provider`, and a numeric `account.balance`. The core sends the configured API key to CapSolver as `clientKey`.
+
+Without a key, the client can still list tools. Live calls report `Configure CAPSOLVER_API_KEY first.`. For an explicit simulation, start the core with `--offline` and expect `execution_mode: offline_simulated` and a simulated balance.
+
+### Submit a task
 
 Use `list_task_types` and `get_task_schema` to choose the task and check its fields. **Generate and save a unique `request_id` before submitting**, then pass it to `create_task` or `get_token`. If the state is `processing`, call `wait_for_result` with the existing `task_id`. Read `solution` when the state is `ready`. If the submission response is missing, look up your saved ID with `get_request_status`.
+
+### Request recovery and persistence
 
 Within the same account and operator, submitting the same ID with identical request parameters returns the existing record. Changing the task, endpoint, app ID, or callback URL with that ID produces an error.
 
 In live mode, request metadata stays in local SQLite across restarts when you reuse the same state directory, API key, and operator. Records have no automatic expiry. Provider result queries are limited to five minutes from submission and at most 120 queries. Solutions are cached in memory. A synchronous solution can become unavailable after restart or cache eviction.
 
-### Usage examples
+## Usage examples
+
+### Offline simulation
 
 In an offline session, ask your client to run this example.
 
@@ -83,11 +121,11 @@ In an offline session, ask your client to run this example.
 
 The simulation should return `state: ready` and `execution_mode: offline_simulated`.
 
-### Browser modules
+## Browser modules
 
 Add either browser service separately in your MCP client. Configure the CapSolver API key on the solver service. The commands below use macOS and Linux paths. On Windows, use the corresponding Python executable from the virtual environment.
 
-**Python browser service**
+### Python browser service
 
 ```sh
 .venv/bin/python -m pip install --upgrade 'capsolver-mcp[browser]'
@@ -96,7 +134,7 @@ Add either browser service separately in your MCP client. Configure the CapSolve
 
 - **STDIO**: Use the same Python executable with `-m capsolver_mcp.browser_server` as its arguments.
 
-**Patchright browser service**
+### Patchright browser service
 
 Use Node.js 22, npm, and Google Chrome. Build from the `browser-patchright` source directory or install the matching tarball from the release assets.
 
@@ -107,9 +145,9 @@ npm run build
 
 - **STDIO**: Use `node` as the command and pass these arguments in order: `/path/to/capsolver-mcp/browser-patchright/dist/index.js`, `--workflow-python`, and `/path/to/capsolver-mcp/.venv/bin/python`.
 
-### Supported MCP tools
+## Supported MCP tools
 
-#### Solver service (15 tools)
+### Solver service (15 tools)
 
 | Tool | Purpose |
 | --- | --- |
@@ -129,7 +167,7 @@ npm run build
 | `get_task_result_wait` | Wait for an existing task using `timeout_seconds`. |
 | `get_request_status` | Look up a submission by request ID, including after a connection interruption. |
 
-#### Python browser service (13 tools)
+### Python browser service (13 tools)
 
 | Tool | Purpose |
 | --- | --- |
@@ -147,11 +185,13 @@ npm run build
 | `browser_api_request` | Send an HTTP request using the browser session context. |
 | `browser_close` | Close the session or disconnect from the browser. |
 
-#### Patchright browser service
+### Patchright browser service
 
 Patchright exposes 66 native tools. The `--workflow-python` option adds 13 workflow tools with the `capsolver_` prefix, for a total of 79. Open the target page, attach its tab with `capsolver_browser_attach`, and use the returned IDs with the prefixed workflow tools. For either browser service, verify the site's business response after applying the solution.
 
-### Coverage
+## Coverage
+
+[Detailed coverage and requirements](docs/coverage.md)
 
 The built-in catalog lists 25 task entries. Use `list_task_types`
 to browse them and `get_task_schema` to check the selected type, required
@@ -172,7 +212,9 @@ fields, supported endpoints and proxy policy.
 `create_task` for other supported tasks. For browser workflows, verify the
 website response after applying the result.
 
-### Upgrade from 0.1.x
+## Upgrade from 0.1.x
+
+[Full migration guide](docs/migration.md)
 
 1. Back up the old client configuration and keep its environment. Install
    the latest release in a separate environment with
@@ -195,7 +237,9 @@ website response after applying the result.
 To roll back, restore the old client settings and environment, or pin
 `capsolver-mcp==0.1.3` again.
 
-### Troubleshooting
+## Troubleshooting
+
+[Detailed troubleshooting guide](docs/troubleshooting.md)
 
 | What you see | How to fix it |
 | --- | --- |
@@ -209,17 +253,25 @@ To roll back, restore the old client settings and environment, or pin
 | CapSolver returned a User-Agent that differs from the current browser | Check `solution.userAgent`, or call `get_actual_user_agent(task_id=...)` for the original task. The Agent prompt requires the returned User-Agent for applying or submitting the token. If the current session cannot use it, the Agent reports the mismatch and leaves the page untouched. |
 | `STALE_CHALLENGE` or the website rejects a ready result | Prepare the current challenge again in the original tab. Check the proxy and browser identity when required. After applying a result, verify the site's own success message or business response. |
 
-### Frequently asked questions
+## Frequently asked questions
 
-**Can I connect only the core service?** Yes. The core can submit tasks with
+### Can I connect only the core service?
+
+Yes. The core can submit tasks with
 known inputs. Add a browser service to read challenges from a page, apply
 results, or check whether the site accepted them.
 
-**Where do I store the API key?** Set `CAPSOLVER_API_KEY` in the core service environment.
+### Where do I store the API key?
 
-**Can I check the connection before adding a key?** Yes. Connect and list tools without a key. For a simulated balance check, explicitly start the core with `--offline` and look for `execution_mode: offline_simulated`.
+Set `CAPSOLVER_API_KEY` in the core service environment.
 
-**How do I find the right task type and proxy settings?** Start with
+### Can I check the connection before adding a key?
+
+Yes. Connect and list tools without a key. For a simulated balance check, explicitly start the core with `--offline` and look for `execution_mode: offline_simulated`.
+
+### How do I find the right task type and proxy settings?
+
+Start with
 `list_task_types`. Read the selected task's fields and proxy policy with
 `get_task_schema`.
 
