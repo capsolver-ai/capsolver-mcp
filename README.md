@@ -2,6 +2,8 @@
 
 # capsolver-mcp
 
+[![CapSolver MCP server on Glama](https://glama.ai/mcp/servers/capsolver-ai/capsolver-mcp/badges/score.svg)](https://glama.ai/mcp/servers/capsolver-ai/capsolver-mcp)
+
 Connect an MCP client to CapSolver for CAPTCHA solving and image recognition. Add a browser service to read a challenge from a page, apply the solution in the same tab, and check the website's response.
 
 [Installation](docs/mcp-integration.md) · [Coverage](docs/coverage.md) · [Upgrade guide](docs/migration.md) · [Troubleshooting](docs/troubleshooting.md) · [Support](SUPPORT.md)
